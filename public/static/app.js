@@ -1798,7 +1798,7 @@ async function loadUsers(page = 1, role = '', search = '') {
     pc.innerHTML = `
     <!-- Filters -->
     <div class="flex items-center gap-3 mb-4 flex-wrap">
-      <input type="text" id="user-search" placeholder="Search by username or email..." style="min-width:220px" onkeyup="debounce(()=>loadUsers(1,document.getElementById('user-role-filter')?.value,this.value),400)()"/>
+      <input type="text" id="user-search" placeholder="Search by username or email..." style="min-width:220px" onkeyup="handleUserSearch(this.value)"/>
       <select id="user-role-filter" onchange="loadUsers(1,this.value,document.getElementById('user-search')?.value||'')" style="width:auto;min-width:160px">
         <option value="">All Roles</option>
         <option value="candidate">Candidates</option>
@@ -1877,15 +1877,15 @@ function renderReports() {
 
 async function loadReports() {
   try {
-    const endpoint = Auth.can('admin') ? `/dashboard/report/${State.user.id}` : `/dashboard/candidate`;
-    const { data } = await API.get(endpoint);
+    // Always use the report endpoint which provides consistent data structure
+    const { data } = await API.get(`/dashboard/report/${State.user.id}`);
     if (!data.success) { notify('Failed to load report data', 'error'); return; }
-    const d = Auth.can('admin') ? data.data : data.data;
+    const d = data.data;
     State.reportData = d;
     const pc = document.getElementById('page-content');
     if (!pc) return;
-    const tbclm = d.tbclm || d.best_result;
-    const submissions = d.submission_history || d.recent_submissions || [];
+    const tbclm = d.best_result;
+    const submissions = d.submission_history || [];
     pc.innerHTML = `
     <!-- Report Header -->
     <div class="card-dark" style="padding:28px;margin-bottom:24px;background:linear-gradient(135deg,#111 0%,#1a1500 100%);border-color:#2a2000">
@@ -1907,7 +1907,7 @@ async function loadReports() {
       </div>
     </div>
 
-    ${tbclm ? `
+        ${tbclm ? `
     <!-- TBCLM Profile -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px">
       <div class="card-dark" style="padding:24px">
@@ -1924,11 +1924,11 @@ async function loadReports() {
               <span style="font-size:12px;color:#aaa">${n}</span>
             </div>
             <div class="flex items-center gap-2">
-              <span style="font-size:13px;font-weight:700;color:${c}">${(tbclm[k]||tbclm[k.toLowerCase()]||0).toFixed(1)}</span>
+              <span style="font-size:13px;font-weight:700;color:${c}">${(tbclm[k]||tbclm[k+'_score']||tbclm[k.toLowerCase()+'_score']||0).toFixed(1)}</span>
               <span style="font-size:10px;color:#444">${w}%</span>
             </div>
           </div>
-          <div class="axis-bar"><div style="width:${tbclm[k]||tbclm[k.toLowerCase()]||0}%;height:8px;border-radius:4px;background:${c}"></div></div>
+          <div class="axis-bar"><div style="width:${tbclm[k]||tbclm[k+'_score']||tbclm[k.toLowerCase()+'_score']||0}%;height:8px;border-radius:4px;background:${c}"></div></div>
         </div>`).join('')}
       </div>
     </div>` : ''}
@@ -1955,7 +1955,7 @@ async function loadReports() {
           <tbody>
             ${submissions.map(sub => `
             <tr class="table-row" style="border-bottom:1px solid #0d0d0d">
-              <td style="padding:10px 12px"><div style="color:#ccc">${sub.simulation_title || 'Unknown'}</div><div style="font-size:10px;color:#555;text-transform:capitalize">${(sub.specialization||'').replace('_',' ')} • ${sub.difficulty||''}</div></td>
+              <td style="padding:10px 12px"><div style="color:#ccc">${sub.simulation_title || sub.title || 'Unknown'}</div><div style="font-size:10px;color:#555;text-transform:capitalize">${(sub.specialization||'').replace('_',' ')}</div></td>
               <td style="padding:10px 12px;text-align:center">${statusBadge(sub.status)}</td>
               <td style="padding:10px 12px;text-align:center;font-weight:800;font-size:15px;color:${sub.hiretx_index?'#FFD700':'#555'}">${sub.hiretx_index?parseFloat(sub.hiretx_index).toFixed(1):'—'}</td>
               <td style="padding:10px 12px;text-align:center"><span style="font-size:11px;color:${getReadinessColor(sub.readiness_level)}">${sub.readiness_level||'—'}</span></td>
@@ -1975,8 +1975,7 @@ async function loadReports() {
             type: 'radar',
             data: {
               labels: ['Technical', 'Behavioral', 'Cognitive', 'Leadership', 'Market'],
-              datasets: [{ data: [tbclm.T||tbclm.t_score||0, tbclm.B||tbclm.b_score||0, tbclm.C||tbclm.c_score||0, tbclm.L||tbclm.l_score||0, tbclm.M||tbclm.m_score||0], backgroundColor: 'rgba(255,215,0,0.1)', borderColor: '#FFD700', borderWidth: 2, pointBackgroundColor: '#FFD700', pointRadius: 5 }]
-            },
+              datasets: [{ data: [tbclm.T||tbclm.t_score||0, tbclm.B||tbclm.b_score||0, tbclm.C||tbclm.c_score||0, tbclm.L||tbclm.l_score||0, tbclm.M||tbclm.m_score||0], backgroundColor: 'rgba(255,215,0,0.1)', borderColor: '#FFD700', borderWidth: 2, pointBackgroundColor: '#FFD700', pointRadius: 5 }]            },
             options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { r: { min: 0, max: 100, ticks: { stepSize: 25, color: '#333', font: { size: 9 } }, grid: { color: '#1a1a1a' }, pointLabels: { color: '#666', font: { size: 10 } }, angleLines: { color: '#1a1a1a' } } } }
           });
         }
@@ -1990,7 +1989,8 @@ async function loadReports() {
 
 // ─── PDF REPORT GENERATION ─────────────────────────────────────────────────────
 function generatePDFReport() {
-  const result = State.simResult || (State.reportData?.tbclm ? { hiretx_index: State.reportData.tbclm.hiretx_index, readiness_level: State.reportData.tbclm.readiness_level, tbclm_breakdown: State.reportData.tbclm, strengths: State.reportData.tbclm.strengths, weaknesses: State.reportData.tbclm.weaknesses, recommendations: State.reportData.tbclm.recommendations } : null);
+  const reportBestResult = State.reportData?.best_result;
+  const result = State.simResult || (reportBestResult ? { hiretx_index: reportBestResult.hiretx_index, readiness_level: reportBestResult.readiness_level, tbclm_breakdown: { T: reportBestResult.t_score, B: reportBestResult.b_score, C: reportBestResult.c_score, L: reportBestResult.l_score, M: reportBestResult.m_score }, strengths: reportBestResult.strengths || [], weaknesses: reportBestResult.weaknesses || [], recommendations: reportBestResult.recommendations || [] } : null);
   const user = State.user;
   const profile = State.reportData?.profile || State.candidateData?.profile || user;
   if (!window.jspdf) { notify('PDF library loading... please try again in a moment', 'warning', 3000); return; }
@@ -2145,20 +2145,42 @@ function renderProfile() {
       </form>
     </div>
     <!-- Account Info -->
-    <div class="card-dark" style="padding:24px">
+    <div class="card-dark" style="padding:24px" id="profile-account-info">
       <div style="font-size:12px;font-weight:700;color:#888;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px">Account Information</div>
-      ${[
-        ['Role', (State.user?.role||'').replace('_',' '), 'user-shield'],
-        ['Member Since', State.user?.created_at ? new Date(State.user.created_at * 1000).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : 'N/A', 'calendar'],
-        ['Verification', State.user?.verified_status ? 'Verified' : 'Pending', 'check-circle'],
-        ['Last Login', State.user?.last_login ? new Date(State.user.last_login * 1000).toLocaleString() : 'N/A', 'clock']
-      ].map(([k,v,ico]) => `
+      <div class="page-loading" style="min-height:80px"><div class="loading-spinner"></div></div>
+    </div>
+  </div>`);
+  // Load full profile data from API for accurate timestamps
+  loadProfileData();
+}
+
+async function loadProfileData() {
+  try {
+    const { data } = await API.get('/auth/me');
+    if (!data.success) return;
+    const u = data.data;
+    // Update State.user with fresh data from DB
+    State.user = { ...State.user, ...u };
+    localStorage.setItem('hiretx_user', JSON.stringify(State.user));
+    const infoEl = document.getElementById('profile-account-info');
+    if (!infoEl) return;
+    const items = [
+      ['Role', (u.role||'').replace('_',' '), 'user-shield'],
+      ['Member Since', u.created_at ? new Date(u.created_at * 1000).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : 'N/A', 'calendar'],
+      ['Verification', u.verified_status ? 'Verified' : 'Pending', 'check-circle'],
+      ['Last Login', u.last_login ? new Date(u.last_login * 1000).toLocaleString() : 'N/A', 'clock']
+    ];
+    infoEl.innerHTML = `
+      <div style="font-size:12px;font-weight:700;color:#888;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px">Account Information</div>
+      ${items.map(([k,v,ico]) => `
       <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #0d0d0d">
         <div class="flex items-center gap-2"><i class="fas fa-${ico}" style="color:#555;width:16px;text-align:center"></i><span style="font-size:13px;color:#888">${k}</span></div>
         <span style="font-size:13px;color:#ccc;font-weight:600;text-transform:capitalize">${v}</span>
-      </div>`).join('')}
-    </div>
-  </div>`);
+      </div>`).join('')}`;
+  } catch (e) {
+    const infoEl = document.getElementById('profile-account-info');
+    if (infoEl) infoEl.innerHTML = `<div style="color:#555;font-size:13px;padding:10px">Could not load account details</div>`;
+  }
 }
 
 async function updateProfile(e) {
@@ -2186,6 +2208,15 @@ async function updateProfile(e) {
 }
 
 // ─── UTILITY ──────────────────────────────────────────────────────────────────
+let _userSearchTimer = null;
+function handleUserSearch(value) {
+  clearTimeout(_userSearchTimer);
+  _userSearchTimer = setTimeout(() => {
+    const role = document.getElementById('user-role-filter')?.value || '';
+    loadUsers(1, role, value);
+  }, 400);
+}
+
 function debounce(fn, delay) {
   let t;
   return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), delay); };

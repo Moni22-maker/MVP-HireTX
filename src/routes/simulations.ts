@@ -29,12 +29,15 @@ simulations.get('/', authMiddleware(), async (c) => {
       params.push(difficulty);
     }
     
-    // Candidates only see their specialization unless none set
+    // Candidates see all simulations sorted by specialization match
     if (user.role === 'candidate' && !specialization) {
       const userData = await c.env.DB.prepare('SELECT specialization FROM users WHERE id = ?').bind(user.sub).first() as any;
       if (userData?.specialization && userData.specialization !== 'none') {
-        query += ' AND s.specialization = ?';
-        params.push(userData.specialization);
+        query += ` ORDER BY CASE WHEN s.specialization = '${userData.specialization}' THEN 0 ELSE 1 END, s.difficulty ASC, s.created_at ASC`;
+        const offset = (parseInt(page) - 1) * parseInt(limit);
+        query += ` LIMIT ${parseInt(limit)} OFFSET ${offset}`;
+        const results = await c.env.DB.prepare(query).bind(...params).all();
+        return c.json({ success: true, data: results.results, total: results.results.length });
       }
     }
     

@@ -47,15 +47,16 @@ dashboard.get('/candidate', authMiddleware(), async (c) => {
       LIMIT 5
     `).bind(user.sub).all();
     
-    // Available simulations
+    // Available simulations - show all active simulations, sorted by specialization match first
     const availableSimulations = await c.env.DB.prepare(`
       SELECT s.*, 
         (SELECT COUNT(*) FROM submissions sub WHERE sub.user_id = ? AND sub.simulation_id = s.id) as attempt_count
       FROM simulations s
       WHERE s.is_active = 1
-      ${profile?.specialization && profile.specialization !== 'none' ? 'AND s.specialization = ?' : ''}
-      ORDER BY s.difficulty ASC, s.created_at DESC
-    `).bind(user.sub, ...(profile?.specialization && profile.specialization !== 'none' ? [profile.specialization] : [])).all();
+      ORDER BY 
+        CASE WHEN s.specialization = ? THEN 0 ELSE 1 END,
+        s.difficulty ASC, s.created_at DESC
+    `).bind(user.sub, profile?.specialization || 'none').all();
     
     // Progress over time
     const progressHistory = await c.env.DB.prepare(`
@@ -528,7 +529,7 @@ dashboard.get('/users', authMiddleware('admin'), async (c) => {
 });
 
 // PUT /api/dashboard/users/:id/role - Update user role
-dashboard.put('/users/:id/role', authMiddleware('super_admin'), async (c) => {
+dashboard.put('/users/:id/role', authMiddleware('admin'), async (c) => {
   try {
     const user = c.get('user');
     const targetId = c.req.param('id');
