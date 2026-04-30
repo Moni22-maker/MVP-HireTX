@@ -8,7 +8,7 @@
     {
       "binding": "DB",
       "database_name": "hiretx-production",
-      "database_id": "local-dev-only"
+      "database_id": "8a34f808-6e08-4ede-9a06-58815dad7801"
     }
   ]
 }
