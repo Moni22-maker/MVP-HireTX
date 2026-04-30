@@ -19,8 +19,887 @@ const State = {
   user: null, token: null, page: 'landing', charts: {},
   sim: { active: null, tasks: [], currentTaskIdx: 0, responses: {}, timer: null, startTime: null, submissionId: null, timeLimit: 3600 },
   adminData: null, evalData: null, candidateData: null, simulations: [],
-  reportData: null, evalSubmission: null, analyticsData: null, usersData: null
+  reportData: null, evalSubmission: null, analyticsData: null, usersData: null,
+  locale: 'en'
 };
+
+const I18N = {
+  en: {
+    appTagline: 'National Employability Readiness System',
+    readinessSystem: 'Readiness System',
+    navigation: 'Navigation',
+    signOut: 'Sign Out',
+    systemOnline: 'System Online',
+    pageNotFound: 'Page not found',
+    signedOut: 'You have been signed out',
+    dashboard: 'Dashboard',
+    simulations: 'Simulations',
+    myReports: 'My Reports',
+    reports: 'Reports',
+    profile: 'Profile',
+    reviewQueue: 'Review Queue',
+    analytics: 'Analytics',
+    users: 'Users',
+    signInToAccount: 'Sign in to your account',
+    emailAddress: 'Email Address',
+    password: 'Password',
+    signIn: 'Sign In',
+    signingIn: 'Signing in...',
+    dontHaveAccount: "Don't have an account?",
+    createAccount: 'Create account',
+    backHome: 'Back to Home',
+    createYourAccount: 'Create Your Account',
+    joinPlatform: 'Join the national employability readiness platform',
+    fullName: 'Full Name',
+    username: 'Username',
+    specialization: 'Specialization',
+    selectField: 'Select your field',
+    humanResources: 'Human Resources',
+    computerScienceIt: 'Computer Science / IT',
+    minimum8Characters: 'Minimum 8 characters',
+    alreadyHaveAccount: 'Already have an account?',
+    creatingAccount: 'Creating account...',
+    accountCreatedWelcome: 'Account created! Welcome to HireTX.',
+    selectSpecialization: 'Please select a specialization',
+    invalidEmailOrPassword: 'Invalid email or password',
+    registerFailed: 'Registration failed. Please try again.',
+    welcomeBack: 'Welcome back, {name}!',
+    hiretxIndex: 'HireTX Index',
+    totalAttempts: 'Total Attempts',
+    simulationsTaken: 'simulations taken',
+    completed: 'Completed',
+    fullyScored: 'fully scored',
+    inProgress: 'In Progress',
+    activeSessions: 'active sessions',
+    basedOnBestPerformance: 'Based on best performance',
+    completeSimulationToSeeIndex: 'Complete a simulation to see your index',
+    tbclmProfile: 'TBCLM Profile',
+    noTbclmDataYet: 'No TBCLM data yet',
+    keyStrengths: 'Key Strengths',
+    areasForGrowth: 'Areas for Growth',
+    noStrengthsYet: 'No strengths identified yet',
+    noWeaknessesYet: 'No weaknesses identified yet',
+    availableSimulations: 'Available Simulations',
+    viewAll: 'View All',
+    noSimulationsForSpecialization: 'No simulations available for your specialization',
+    recentActivity: 'Recent Activity',
+    simulation: 'Simulation',
+    status: 'Status',
+    score: 'Score',
+    date: 'Date',
+    failedToLoadDashboard: 'Failed to load dashboard',
+    failedToLoadDashboardRefresh: 'Failed to load dashboard. Please refresh.',
+    totalCandidates: 'Total Candidates',
+    activeSimulations: 'Active Simulations',
+    publishedSimulations: 'published simulations',
+    totalSubmissions: 'Total Submissions',
+    allAttempts: 'all attempts',
+    pendingReviews: 'Pending Reviews',
+    awaitingEvaluation: 'awaiting evaluation',
+    avgHiretxIndex: 'Avg HireTX Index',
+    platformAverage: 'platform average',
+    scoredSubmissions: 'Scored Submissions',
+    fullyEvaluated: 'fully evaluated',
+    platformTbclmAverages: 'Platform TBCLM Averages',
+    readinessDistribution: 'Readiness Distribution',
+    specializationDistribution: 'Specialization Distribution',
+    scoreRangeDistribution: 'Score Range Distribution',
+    simulationPerformance: 'Simulation Performance',
+    recentRegistrations: 'Recent Registrations',
+    recentAuditActivity: 'Recent Audit Activity',
+    noDataAvailable: 'No data available',
+    noSimulationData: 'No simulation data',
+    noUsersRegistered: 'No users registered',
+    failedToLoadAdminData: 'Failed to load admin data',
+    failedToLoadAdminDashboard: 'Failed to load admin dashboard',
+    filterSimulations: 'Filter simulations by specialization and difficulty',
+    allSpecializations: 'All Specializations',
+    allDifficulties: 'All Difficulties',
+    searchSimulations: 'Search simulations...',
+    failedToLoadSimulations: 'Failed to load simulations',
+    noSimulationsFound: 'No simulations found matching your filters',
+    beginSimulation: 'Begin Simulation',
+    loadingSimulation: 'Loading simulation...',
+    resumingPreviousAttempt: 'Resuming your previous attempt',
+    failedToStartSimulation: 'Failed to start simulation',
+    passScore: 'Pass',
+    maxAttempts: 'Max {count} attempts',
+    completedCount: '{count} completed',
+    attemptLabel: 'Attempt #{count}',
+    tasksLabel: '{count} Tasks',
+    exit: 'Exit',
+    taskProgress: 'Task {current} of {total}',
+    answeredCount: '{count} answered',
+    answeredOfTotal: '{answered} of {total} answered',
+    previous: 'Previous',
+    nextTask: 'Next Task',
+    submitSimulation: 'Submit Simulation',
+    noTaskFound: 'No task found',
+    writeDetailedResponse: 'Write your detailed response here...',
+    responseBullet1: 'Be specific and use domain terminology',
+    responseBullet2: 'Structure your response clearly',
+    responseBullet3: 'Minimum 50 words recommended',
+    words: '{count} words',
+    minWordsRecommended: 'Min. 50 words recommended for full scoring',
+    scenarioContext: 'Scenario Context',
+    selectBestAnswer: 'Select the best answer',
+    freeTextResponse: 'Free text response',
+    scenarioAnalysisRequired: 'Scenario analysis required',
+    exitSimulation: 'Exit Simulation',
+    exitSimulationConfirm: 'Are you sure you want to exit? Your progress will be saved as "In Progress" and you can resume later.',
+    continueSimulation: 'Continue Simulation',
+    exitNow: 'Exit Now',
+    submitSimulationTitle: 'Submit Simulation',
+    readyToSubmit: 'Ready to Submit?',
+    answeredTasksSummary: 'You have answered {answered} of {total} tasks.',
+    unansweredTasks: '{count} task{suffix} unanswered. Unanswered tasks will receive 0 points.',
+    allTasksAnswered: 'All tasks answered!',
+    reviewAnswers: 'Review Answers',
+    submitNow: 'Submit Now',
+    timeIsUp: 'Time is up! Auto-submitting...',
+    sessionErrorRestart: 'Session error. Please restart.',
+    scoringSimulation: 'Scoring your simulation...',
+    pleaseWaitMoment: 'Please wait, this may take a moment',
+    simulationSubmitted: 'Simulation submitted successfully!',
+    submissionFailed: 'Submission failed',
+    failedToSubmitSimulation: 'Failed to submit simulation',
+    assessmentComplete: 'Assessment Complete',
+    autoScoreUnderReview: 'Auto Score: {score}% · Under Review by Evaluator',
+    tbclmBreakdown: 'TBCLM Breakdown',
+    noSpecificStrengths: 'No specific strengths identified',
+    continueDeveloping: 'Continue developing all dimensions',
+    improvementRecommendations: 'Improvement Recommendations',
+    backToDashboard: 'Back to Dashboard',
+    tryAnotherSimulation: 'Try Another Simulation',
+    downloadPdfReport: 'Download PDF Report',
+    yourScore: 'Your Score',
+    evaluatorQueueTitle: 'Evaluator - Review Queue',
+    failedToLoadEvaluatorData: 'Failed to load evaluator data',
+    pendingReview: 'Pending Review',
+    awaitingYourReview: 'awaiting your review',
+    reviewed: 'Reviewed',
+    byYou: 'by you',
+    avgScoreGiven: 'Avg Score Given',
+    evaluationAverage: 'your evaluation average',
+    pendingSubmissions: 'Pending Submissions',
+    allSubmissionsReviewed: 'All submissions reviewed! Great work.',
+    candidate: 'Candidate',
+    autoScore: 'Auto Score',
+    submitted: 'Submitted',
+    action: 'Action',
+    review: 'Review',
+    recentlyReviewed: 'Recently Reviewed',
+    finalScore: 'Final Score',
+    failedToLoadEvaluatorDashboard: 'Failed to load evaluator dashboard',
+    loadingSubmission: 'Loading submission...',
+    failedToLoadSubmission: 'Failed to load submission',
+    evaluate: 'Evaluate',
+    task: 'Task',
+    candidateResponse: 'Candidate Response',
+    noResponseSubmitted: 'No response submitted for this task',
+    evaluatorScore: 'Evaluator Score',
+    optionalNotes: 'Notes (optional)',
+    addScoringNotes: 'Add scoring notes...',
+    scoringPanel: 'Scoring Panel',
+    autoTbclmScores: 'Auto TBCLM Scores',
+    overrideFinalScore: 'Override Final Score (0-100)',
+    leaveBlankAutoScore: 'Leave blank to use auto-calculated score',
+    generalEvaluationNotes: 'General Evaluation Notes',
+    overallAssessmentPlaceholder: 'Overall assessment, qualitative observations, and recommendations...',
+    submitEvaluation: 'Submit Evaluation',
+    backToQueue: 'Back to Queue',
+    evaluationSubmitted: 'Evaluation submitted successfully!',
+    failedToSubmitEvaluation: 'Failed to submit evaluation',
+    analyticsInsights: 'Analytics & Insights',
+    skillGapAnalysis: 'Skill Gap Analysis by Specialization',
+    submissionsCount: '{count} submissions',
+    weakestDimension: 'Weakest dimension',
+    noSkillGapData: 'No skill gap data available yet',
+    trendingSimulations: 'Trending Simulations',
+    noTrendingData: 'No trending data yet',
+    topPerformers: 'Top Performers',
+    noPerformerData: 'No performer data yet',
+    readinessTrends30Days: 'Readiness Trends (30 days)',
+    avgHiretxIndexTrend: 'Avg HireTX Index',
+    failedToLoadAnalytics: 'Failed to load analytics',
+    userManagement: 'User Management',
+    searchUsers: 'Search by username or email...',
+    allRoles: 'All Roles',
+    candidates: 'Candidates',
+    evaluators: 'Evaluators',
+    admins: 'Admins',
+    allUsers: 'All Users',
+    usersLoaded: '{count} users loaded',
+    user: 'User',
+    role: 'Role',
+    actions: 'Actions',
+    active: 'Active',
+    inactive: 'Inactive',
+    changeRole: 'Change Role',
+    you: 'You',
+    roleUpdated: 'Role updated successfully',
+    failedToLoadUsers: 'Failed to load users',
+    failedToUpdateRole: 'Failed to update role',
+    reportsPerformance: 'Reports & Performance',
+    failedToLoadReportData: 'Failed to load report data',
+    failedToLoadReports: 'Failed to load reports',
+    candidateId: 'Candidate ID',
+    unrated: 'Unrated',
+    noCompletedAssessments: 'No completed assessments',
+    dimensionScores: 'Dimension Scores',
+    assessmentHistory: 'Assessment History',
+    exportPdf: 'Export PDF',
+    noAssessmentsCompleted: 'No assessments completed yet. Start a simulation to build your report.',
+    myProfile: 'My Profile',
+    saveChanges: 'Save Changes',
+    accountInformation: 'Account Information',
+    memberSince: 'Member Since',
+    verification: 'Verification',
+    lastLogin: 'Last Login',
+    verified: 'Verified',
+    pending: 'Pending',
+    couldNotLoadAccountDetails: 'Could not load account details',
+    saving: 'Saving...',
+    profileUpdated: 'Profile updated successfully!',
+    profileSaved: 'Profile saved!',
+    failedToUpdateProfile: 'Failed to update profile',
+    generatedOn: 'Generated'
+  },
+  ar: {
+    appTagline: 'النظام الوطني للجاهزية للتوظيف',
+    readinessSystem: 'منصة الجاهزية',
+    navigation: 'التنقل',
+    signOut: 'تسجيل الخروج',
+    systemOnline: 'النظام متصل',
+    pageNotFound: 'الصفحة غير موجودة',
+    signedOut: 'تم تسجيل خروجك',
+    dashboard: 'لوحة التحكم',
+    simulations: 'المحاكاة',
+    myReports: 'تقاريري',
+    reports: 'التقارير',
+    profile: 'الملف الشخصي',
+    reviewQueue: 'قائمة المراجعة',
+    analytics: 'التحليلات',
+    users: 'المستخدمون',
+    signInToAccount: 'سجل الدخول إلى حسابك',
+    emailAddress: 'البريد الإلكتروني',
+    password: 'كلمة المرور',
+    signIn: 'تسجيل الدخول',
+    signingIn: 'جارٍ تسجيل الدخول...',
+    dontHaveAccount: 'ليس لديك حساب؟',
+    createAccount: 'إنشاء حساب',
+    backHome: 'العودة للرئيسية',
+    createYourAccount: 'أنشئ حسابك',
+    joinPlatform: 'انضم إلى المنصة الوطنية لقياس الجاهزية للتوظيف',
+    fullName: 'الاسم الكامل',
+    username: 'اسم المستخدم',
+    specialization: 'التخصص',
+    selectField: 'اختر مجالك',
+    humanResources: 'الموارد البشرية',
+    computerScienceIt: 'علوم الحاسب / تقنية المعلومات',
+    minimum8Characters: '8 أحرف على الأقل',
+    alreadyHaveAccount: 'لديك حساب بالفعل؟',
+    creatingAccount: 'جارٍ إنشاء الحساب...',
+    accountCreatedWelcome: 'تم إنشاء الحساب. أهلاً بك في HireTX.',
+    selectSpecialization: 'يرجى اختيار التخصص',
+    invalidEmailOrPassword: 'البريد الإلكتروني أو كلمة المرور غير صحيحة',
+    registerFailed: 'فشل التسجيل. حاول مرة أخرى.',
+    welcomeBack: 'مرحباً بعودتك يا {name}!',
+    hiretxIndex: 'مؤشر HireTX',
+    totalAttempts: 'إجمالي المحاولات',
+    simulationsTaken: 'عدد المحاكاة المنجزة',
+    completed: 'مكتمل',
+    fullyScored: 'تم تقييمه بالكامل',
+    inProgress: 'قيد التنفيذ',
+    activeSessions: 'جلسات نشطة',
+    basedOnBestPerformance: 'استناداً إلى أفضل أداء',
+    completeSimulationToSeeIndex: 'أكمل محاكاة لرؤية مؤشرك',
+    tbclmProfile: 'ملف TBCLM',
+    noTbclmDataYet: 'لا توجد بيانات TBCLM بعد',
+    keyStrengths: 'نقاط القوة',
+    areasForGrowth: 'مجالات التطوير',
+    noStrengthsYet: 'لم يتم تحديد نقاط قوة بعد',
+    noWeaknessesYet: 'لم يتم تحديد مجالات تطوير بعد',
+    availableSimulations: 'المحاكاة المتاحة',
+    viewAll: 'عرض الكل',
+    noSimulationsForSpecialization: 'لا توجد محاكاة متاحة لهذا التخصص',
+    recentActivity: 'النشاط الأخير',
+    simulation: 'المحاكاة',
+    status: 'الحالة',
+    score: 'النتيجة',
+    date: 'التاريخ',
+    failedToLoadDashboard: 'تعذر تحميل لوحة التحكم',
+    failedToLoadDashboardRefresh: 'تعذر تحميل لوحة التحكم. يرجى التحديث.',
+    totalCandidates: 'إجمالي المرشحين',
+    activeSimulations: 'المحاكاة النشطة',
+    publishedSimulations: 'محاكاة منشورة',
+    totalSubmissions: 'إجمالي الإرسالات',
+    allAttempts: 'كل المحاولات',
+    pendingReviews: 'المراجعات المعلقة',
+    awaitingEvaluation: 'بانتظار التقييم',
+    avgHiretxIndex: 'متوسط مؤشر HireTX',
+    platformAverage: 'متوسط المنصة',
+    scoredSubmissions: 'الإرسالات المقيمة',
+    fullyEvaluated: 'تم تقييمها بالكامل',
+    platformTbclmAverages: 'متوسطات TBCLM على مستوى المنصة',
+    readinessDistribution: 'توزيع الجاهزية',
+    specializationDistribution: 'توزيع التخصصات',
+    scoreRangeDistribution: 'توزيع نطاق الدرجات',
+    simulationPerformance: 'أداء المحاكاة',
+    recentRegistrations: 'أحدث التسجيلات',
+    recentAuditActivity: 'آخر أنشطة التدقيق',
+    noDataAvailable: 'لا توجد بيانات متاحة',
+    noSimulationData: 'لا توجد بيانات للمحاكاة',
+    noUsersRegistered: 'لا يوجد مستخدمون مسجلون',
+    failedToLoadAdminData: 'تعذر تحميل بيانات الإدارة',
+    failedToLoadAdminDashboard: 'تعذر تحميل لوحة الإدارة',
+    filterSimulations: 'قم بتصفية المحاكاة حسب التخصص ومستوى الصعوبة',
+    allSpecializations: 'كل التخصصات',
+    allDifficulties: 'كل مستويات الصعوبة',
+    searchSimulations: 'ابحث في المحاكاة...',
+    failedToLoadSimulations: 'تعذر تحميل المحاكاة',
+    noSimulationsFound: 'لا توجد محاكاة مطابقة للفلاتر',
+    beginSimulation: 'ابدأ المحاكاة',
+    loadingSimulation: 'جارٍ تحميل المحاكاة...',
+    resumingPreviousAttempt: 'جارٍ استكمال محاولتك السابقة',
+    failedToStartSimulation: 'تعذر بدء المحاكاة',
+    passScore: 'النجاح',
+    maxAttempts: 'الحد الأقصى {count} محاولات',
+    completedCount: '{count} مكتملة',
+    attemptLabel: 'المحاولة رقم {count}',
+    tasksLabel: '{count} مهام',
+    exit: 'خروج',
+    taskProgress: 'المهمة {current} من {total}',
+    answeredCount: '{count} مجاب عنها',
+    answeredOfTotal: 'تمت الإجابة على {answered} من {total}',
+    previous: 'السابق',
+    nextTask: 'المهمة التالية',
+    submitSimulation: 'إرسال المحاكاة',
+    noTaskFound: 'لم يتم العثور على المهمة',
+    writeDetailedResponse: 'اكتب إجابتك التفصيلية هنا...',
+    responseBullet1: 'كن محدداً واستخدم المصطلحات المتخصصة',
+    responseBullet2: 'نظم إجابتك بوضوح',
+    responseBullet3: 'يوصى بحد أدنى 50 كلمة',
+    words: '{count} كلمة',
+    minWordsRecommended: 'يوصى بحد أدنى 50 كلمة للحصول على التقييم الكامل',
+    scenarioContext: 'سياق السيناريو',
+    selectBestAnswer: 'اختر أفضل إجابة',
+    freeTextResponse: 'إجابة نصية حرة',
+    scenarioAnalysisRequired: 'يتطلب تحليلاً للموقف',
+    exitSimulation: 'الخروج من المحاكاة',
+    exitSimulationConfirm: 'هل أنت متأكد من رغبتك في الخروج؟ سيتم حفظ تقدمك كحالة "قيد التنفيذ" ويمكنك المتابعة لاحقاً.',
+    continueSimulation: 'متابعة المحاكاة',
+    exitNow: 'خروج الآن',
+    submitSimulationTitle: 'إرسال المحاكاة',
+    readyToSubmit: 'هل أنت جاهز للإرسال؟',
+    answeredTasksSummary: 'أجبت عن {answered} من أصل {total} مهام.',
+    unansweredTasks: 'هناك {count} مهمة{suffix} بدون إجابة. المهام غير المجابة ستحصل على 0 نقطة.',
+    allTasksAnswered: 'تمت الإجابة على جميع المهام!',
+    reviewAnswers: 'مراجعة الإجابات',
+    submitNow: 'إرسال الآن',
+    timeIsUp: 'انتهى الوقت. جارٍ الإرسال تلقائياً...',
+    sessionErrorRestart: 'خطأ في الجلسة. يرجى إعادة البدء.',
+    scoringSimulation: 'جارٍ تقييم المحاكاة...',
+    pleaseWaitMoment: 'يرجى الانتظار، قد يستغرق هذا لحظة',
+    simulationSubmitted: 'تم إرسال المحاكاة بنجاح!',
+    submissionFailed: 'فشل الإرسال',
+    failedToSubmitSimulation: 'تعذر إرسال المحاكاة',
+    assessmentComplete: 'اكتمل التقييم',
+    autoScoreUnderReview: 'النتيجة الآلية: {score}% · بانتظار مراجعة المقيم',
+    tbclmBreakdown: 'تفصيل TBCLM',
+    noSpecificStrengths: 'لم يتم تحديد نقاط قوة محددة',
+    continueDeveloping: 'استمر في تطوير جميع الأبعاد',
+    improvementRecommendations: 'توصيات التحسين',
+    backToDashboard: 'العودة إلى لوحة التحكم',
+    tryAnotherSimulation: 'جرّب محاكاة أخرى',
+    downloadPdfReport: 'تنزيل تقرير PDF',
+    yourScore: 'درجتك',
+    evaluatorQueueTitle: 'المقيّم - قائمة المراجعة',
+    failedToLoadEvaluatorData: 'تعذر تحميل بيانات المقيم',
+    pendingReview: 'بانتظار المراجعة',
+    awaitingYourReview: 'بانتظار مراجعتك',
+    reviewed: 'تمت مراجعته',
+    byYou: 'بواسطتك',
+    avgScoreGiven: 'متوسط الدرجات الممنوحة',
+    evaluationAverage: 'متوسط تقييمك',
+    pendingSubmissions: 'الإرسالات المعلقة',
+    allSubmissionsReviewed: 'تمت مراجعة كل الإرسالات. عمل رائع.',
+    candidate: 'المرشح',
+    autoScore: 'النتيجة الآلية',
+    submitted: 'تم الإرسال',
+    action: 'الإجراء',
+    review: 'مراجعة',
+    recentlyReviewed: 'تمت مراجعته مؤخراً',
+    finalScore: 'النتيجة النهائية',
+    failedToLoadEvaluatorDashboard: 'تعذر تحميل لوحة المقيم',
+    loadingSubmission: 'جارٍ تحميل الإرسال...',
+    failedToLoadSubmission: 'تعذر تحميل الإرسال',
+    evaluate: 'تقييم',
+    task: 'مهمة',
+    candidateResponse: 'إجابة المرشح',
+    noResponseSubmitted: 'لم يتم إرسال إجابة لهذه المهمة',
+    evaluatorScore: 'درجة المقيم',
+    optionalNotes: 'ملاحظات (اختياري)',
+    addScoringNotes: 'أضف ملاحظات التقييم...',
+    scoringPanel: 'لوحة التقييم',
+    autoTbclmScores: 'درجات TBCLM الآلية',
+    overrideFinalScore: 'تجاوز النتيجة النهائية (0-100)',
+    leaveBlankAutoScore: 'اتركه فارغاً لاستخدام النتيجة الآلية',
+    generalEvaluationNotes: 'ملاحظات التقييم العامة',
+    overallAssessmentPlaceholder: 'التقييم العام والملاحظات النوعية والتوصيات...',
+    submitEvaluation: 'إرسال التقييم',
+    backToQueue: 'العودة إلى القائمة',
+    evaluationSubmitted: 'تم إرسال التقييم بنجاح!',
+    failedToSubmitEvaluation: 'تعذر إرسال التقييم',
+    analyticsInsights: 'التحليلات والرؤى',
+    skillGapAnalysis: 'تحليل فجوات المهارات حسب التخصص',
+    submissionsCount: '{count} إرسالات',
+    weakestDimension: 'أضعف بُعد',
+    noSkillGapData: 'لا توجد بيانات لفجوات المهارات بعد',
+    trendingSimulations: 'المحاكاة الرائجة',
+    noTrendingData: 'لا توجد بيانات رائجة بعد',
+    topPerformers: 'أفضل المؤدين',
+    noPerformerData: 'لا توجد بيانات أداء بعد',
+    readinessTrends30Days: 'اتجاهات الجاهزية (30 يوماً)',
+    avgHiretxIndexTrend: 'متوسط مؤشر HireTX',
+    failedToLoadAnalytics: 'تعذر تحميل التحليلات',
+    userManagement: 'إدارة المستخدمين',
+    searchUsers: 'ابحث باسم المستخدم أو البريد الإلكتروني...',
+    allRoles: 'كل الأدوار',
+    candidates: 'المرشحون',
+    evaluators: 'المقيّمون',
+    admins: 'المديرون',
+    allUsers: 'كل المستخدمين',
+    usersLoaded: 'تم تحميل {count} مستخدم',
+    user: 'المستخدم',
+    role: 'الدور',
+    actions: 'الإجراءات',
+    active: 'نشط',
+    inactive: 'غير نشط',
+    changeRole: 'تغيير الدور',
+    you: 'أنت',
+    roleUpdated: 'تم تحديث الدور بنجاح',
+    failedToLoadUsers: 'تعذر تحميل المستخدمين',
+    failedToUpdateRole: 'تعذر تحديث الدور',
+    reportsPerformance: 'التقارير والأداء',
+    failedToLoadReportData: 'تعذر تحميل بيانات التقرير',
+    failedToLoadReports: 'تعذر تحميل التقارير',
+    candidateId: 'معرف المرشح',
+    unrated: 'غير مقيم',
+    noCompletedAssessments: 'لا توجد تقييمات مكتملة',
+    dimensionScores: 'درجات الأبعاد',
+    assessmentHistory: 'سجل التقييمات',
+    exportPdf: 'تصدير PDF',
+    noAssessmentsCompleted: 'لا توجد تقييمات مكتملة بعد. ابدأ محاكاة لبناء تقريرك.',
+    myProfile: 'ملفي الشخصي',
+    saveChanges: 'حفظ التغييرات',
+    accountInformation: 'معلومات الحساب',
+    memberSince: 'عضو منذ',
+    verification: 'التحقق',
+    lastLogin: 'آخر تسجيل دخول',
+    verified: 'موثق',
+    pending: 'قيد الانتظار',
+    couldNotLoadAccountDetails: 'تعذر تحميل تفاصيل الحساب',
+    saving: 'جارٍ الحفظ...',
+    profileUpdated: 'تم تحديث الملف الشخصي بنجاح!',
+    profileSaved: 'تم حفظ الملف الشخصي!',
+    failedToUpdateProfile: 'تعذر تحديث الملف الشخصي',
+    generatedOn: 'تاريخ الإنشاء'
+  }
+};
+
+function t(key, vars = {}) {
+  const locale = State.locale in I18N ? State.locale : 'en';
+  const table = I18N[locale] || I18N.en;
+  const template = table[key] || I18N.en[key] || key;
+  return Object.entries(vars).reduce((out, [name, value]) => out.replaceAll(`{${name}}`, value), template);
+}
+
+function currentLocale() {
+  return State.locale === 'ar' ? 'ar' : 'en';
+}
+
+function isRTL() {
+  return currentLocale() === 'ar';
+}
+
+function applyLocaleSettings() {
+  const locale = currentLocale();
+  document.documentElement.lang = locale;
+  document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr';
+  document.title = locale === 'ar' ? 'HireTX - النظام الوطني للجاهزية للتوظيف' : 'HireTX - National Employability Readiness System';
+}
+
+function loadLocale() {
+  try {
+    const saved = localStorage.getItem('hiretx_locale');
+    State.locale = saved === 'ar' ? 'ar' : 'en';
+  } catch {
+    State.locale = 'en';
+  }
+  applyLocaleSettings();
+}
+
+function setLocale(locale) {
+  State.locale = locale === 'ar' ? 'ar' : 'en';
+  localStorage.setItem('hiretx_locale', State.locale);
+  applyLocaleSettings();
+  render();
+}
+
+function syncLocaleSwitcher() {
+  let switcher = document.getElementById('locale-switcher');
+  if (!switcher) {
+    switcher = document.createElement('div');
+    switcher.id = 'locale-switcher';
+    switcher.className = 'locale-switcher';
+    document.body.appendChild(switcher);
+  }
+  switcher.innerHTML = `
+    <button type="button" class="${currentLocale() === 'en' ? 'active' : ''}" onclick="setLocale('en')">EN</button>
+    <button type="button" class="${currentLocale() === 'ar' ? 'active' : ''}" onclick="setLocale('ar')">AR</button>
+  `;
+}
+
+function formatDate(value, options) {
+  if (!value) return '—';
+  return new Intl.DateTimeFormat(currentLocale() === 'ar' ? 'ar' : 'en-US', options || {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  }).format(typeof value === 'number' ? new Date(value) : value);
+}
+
+function formatDateTime(value, options) {
+  if (!value) return '—';
+  return new Intl.DateTimeFormat(currentLocale() === 'ar' ? 'ar' : 'en-US', options || {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  }).format(typeof value === 'number' ? new Date(value) : value);
+}
+
+function difficultyLabel(level) {
+  const labels = {
+    beginner: { en: 'Beginner', ar: 'مبتدئ' },
+    intermediate: { en: 'Intermediate', ar: 'متوسط' },
+    advanced: { en: 'Advanced', ar: 'متقدم' },
+    expert: { en: 'Expert', ar: 'خبير' }
+  };
+  return labels[level]?.[currentLocale()] || level || '—';
+}
+
+function specializationLabel(spec, short = false) {
+  if (short) {
+    const shortLabels = {
+      human_resources: { en: 'HR', ar: 'موارد' },
+      computer_science: { en: 'IT', ar: 'تقنية' }
+    };
+    return shortLabels[spec]?.[currentLocale()] || '—';
+  }
+  const labels = {
+    human_resources: { en: t('humanResources'), ar: t('humanResources') },
+    computer_science: { en: t('computerScienceIt'), ar: t('computerScienceIt') },
+    none: { en: 'Not Set', ar: 'غير محدد' }
+  };
+  return labels[spec]?.[currentLocale()] || (spec ? spec.replaceAll('_', ' ') : labels.none[currentLocale()]);
+}
+
+function roleLabel(role) {
+  const labels = {
+    candidate: { en: 'Candidate', ar: 'مرشح' },
+    evaluator: { en: 'Evaluator', ar: 'مقيّم' },
+    admin: { en: 'Admin', ar: 'مدير' },
+    super_admin: { en: 'Super Admin', ar: 'مدير أعلى' }
+  };
+  return labels[role]?.[currentLocale()] || role || '—';
+}
+
+function statusLabel(status) {
+  const labels = {
+    in_progress: { en: t('inProgress'), ar: t('inProgress') },
+    submitted: { en: t('submitted'), ar: t('submitted') },
+    under_review: { en: 'Under Review', ar: 'قيد المراجعة' },
+    scored: { en: 'Scored', ar: 'تم التقييم' },
+    archived: { en: 'Archived', ar: 'مؤرشف' }
+  };
+  return labels[status]?.[currentLocale()] || status || '—';
+}
+
+function readinessLabel(level) {
+  const labels = {
+    'Ready for Immediate Employment': { en: 'Ready for Immediate Employment', ar: 'جاهز للتوظيف الفوري' },
+    'Professionally Prepared': { en: 'Professionally Prepared', ar: 'مستعد مهنياً' },
+    'Developing Professional': { en: 'Developing Professional', ar: 'قيد التطور المهني' },
+    'Needs Structured Development': { en: 'Needs Structured Development', ar: 'بحاجة إلى تطوير منظم' },
+    'No Data': { en: 'No Data', ar: 'لا توجد بيانات' },
+    'Not Assessed': { en: 'Not Assessed', ar: 'غير مقيم' }
+  };
+  return labels[level]?.[currentLocale()] || level || t('unrated');
+}
+
+function axisLabel(code, variant = 'short') {
+  const labels = {
+    T: { short: { en: 'Technical', ar: 'تقني' }, long: { en: 'Technical Competency', ar: 'الكفاءة التقنية' } },
+    B: { short: { en: 'Behavioral', ar: 'سلوكي' }, long: { en: 'Behavioral Skills', ar: 'المهارات السلوكية' } },
+    C: { short: { en: 'Cognitive', ar: 'معرفي' }, long: { en: 'Cognitive Ability', ar: 'القدرة المعرفية' } },
+    L: { short: { en: 'Leadership', ar: 'قيادة' }, long: { en: 'Leadership & Professionalism', ar: 'القيادة والاحترافية' } },
+    M: { short: { en: 'Market', ar: 'السوق' }, long: { en: 'Market Readiness', ar: 'الجاهزية لسوق العمل' } }
+  };
+  return labels[code]?.[variant]?.[currentLocale()] || code;
+}
+
+function translateApiMessage(message) {
+  const map = {
+    'Username, email, and password are required': { en: 'Username, email, and password are required', ar: 'اسم المستخدم والبريد الإلكتروني وكلمة المرور مطلوبة' },
+    'Password must be at least 8 characters': { en: 'Password must be at least 8 characters', ar: 'يجب أن تكون كلمة المرور 8 أحرف على الأقل' },
+    'Username must be 3-30 alphanumeric characters or underscores': { en: 'Username must be 3-30 alphanumeric characters or underscores', ar: 'يجب أن يتكون اسم المستخدم من 3 إلى 30 حرفاً أو رقماً أو شرطة سفلية' },
+    'Username or email already registered': { en: 'Username or email already registered', ar: 'اسم المستخدم أو البريد الإلكتروني مسجل مسبقاً' },
+    'Registration successful': { en: 'Registration successful', ar: 'تم التسجيل بنجاح' },
+    'Registration failed. Please try again.': { en: 'Registration failed. Please try again.', ar: 'فشل التسجيل. حاول مرة أخرى.' },
+    'Email and password are required': { en: 'Email and password are required', ar: 'البريد الإلكتروني وكلمة المرور مطلوبان' },
+    'Invalid credentials': { en: t('invalidEmailOrPassword'), ar: t('invalidEmailOrPassword') },
+    'Login successful': { en: 'Login successful', ar: 'تم تسجيل الدخول بنجاح' },
+    'Login failed. Please try again.': { en: 'Login failed. Please try again.', ar: 'فشل تسجيل الدخول. حاول مرة أخرى.' },
+    'Failed to load dashboard': { en: t('failedToLoadDashboard'), ar: t('failedToLoadDashboard') },
+    'Failed to load admin dashboard': { en: t('failedToLoadAdminDashboard'), ar: t('failedToLoadAdminDashboard') },
+    'Failed to fetch users': { en: t('failedToLoadUsers'), ar: t('failedToLoadUsers') },
+    'User role updated successfully': { en: t('roleUpdated'), ar: t('roleUpdated') },
+    'Failed to update user role': { en: t('failedToUpdateRole'), ar: t('failedToUpdateRole') },
+    'Profile updated successfully': { en: t('profileUpdated'), ar: t('profileUpdated') },
+    'Profile update failed': { en: t('failedToUpdateProfile'), ar: t('failedToUpdateProfile') }
+  };
+  return map[message]?.[currentLocale()] || message;
+}
+
+const STATIC_ARABIC_TEXT = new Map([
+  ['Dashboard', 'لوحة التحكم'],
+  ['Simulations', 'المحاكاة'],
+  ['My Reports', 'تقاريري'],
+  ['Reports', 'التقارير'],
+  ['Profile', 'الملف الشخصي'],
+  ['Analytics', 'التحليلات'],
+  ['Users', 'المستخدمون'],
+  ['Review Queue', 'قائمة المراجعة'],
+  ['Admin Dashboard', 'لوحة الإدارة'],
+  ['Super Admin Dashboard', 'لوحة الإدارة العليا'],
+  ['Evaluator - Review Queue', 'المقيّم - قائمة المراجعة'],
+  ['Navigation', 'التنقل'],
+  ['System Online', 'النظام متصل'],
+  ['Sign Out', 'تسجيل الخروج'],
+  ['Total Attempts', 'إجمالي المحاولات'],
+  ['Completed', 'مكتمل'],
+  ['In Progress', 'قيد التنفيذ'],
+  ['Specialization', 'التخصص'],
+  ['TBCLM Profile', 'ملف TBCLM'],
+  ['Key Strengths', 'نقاط القوة'],
+  ['Areas for Growth', 'مجالات التطوير'],
+  ['Available Simulations', 'المحاكاة المتاحة'],
+  ['View All', 'عرض الكل'],
+  ['Recent Activity', 'النشاط الأخير'],
+  ['Simulation', 'المحاكاة'],
+  ['Status', 'الحالة'],
+  ['Score', 'النتيجة'],
+  ['Date', 'التاريخ'],
+  ['HireTX Index', 'مؤشر HireTX'],
+  ['Assessment Complete', 'اكتمل التقييم'],
+  ['TBCLM Breakdown', 'تفصيل TBCLM'],
+  ['Improvement Recommendations', 'توصيات التحسين'],
+  ['Back to Dashboard', 'العودة إلى لوحة التحكم'],
+  ['Try Another Simulation', 'جرّب محاكاة أخرى'],
+  ['Download PDF Report', 'تنزيل تقرير PDF'],
+  ['Pending Review', 'بانتظار المراجعة'],
+  ['Reviewed', 'تمت مراجعته'],
+  ['Avg Score Given', 'متوسط الدرجات الممنوحة'],
+  ['Pending Submissions', 'الإرسالات المعلقة'],
+  ['Candidate', 'المرشح'],
+  ['Auto Score', 'النتيجة الآلية'],
+  ['Submitted', 'تم الإرسال'],
+  ['Action', 'الإجراء'],
+  ['Review', 'مراجعة'],
+  ['Recently Reviewed', 'تمت مراجعته مؤخراً'],
+  ['Final Score', 'النتيجة النهائية'],
+  ['Analytics & Insights', 'التحليلات والرؤى'],
+  ['Skill Gap Analysis by Specialization', 'تحليل فجوات المهارات حسب التخصص'],
+  ['Trending Simulations', 'المحاكاة الرائجة'],
+  ['Top Performers', 'أفضل المؤدين'],
+  ['Readiness Trends (30 days)', 'اتجاهات الجاهزية (30 يوماً)'],
+  ['User Management', 'إدارة المستخدمين'],
+  ['All Roles', 'كل الأدوار'],
+  ['Candidates', 'المرشحون'],
+  ['Evaluators', 'المقيّمون'],
+  ['Admins', 'المديرون'],
+  ['All Users', 'كل المستخدمين'],
+  ['User', 'المستخدم'],
+  ['Role', 'الدور'],
+  ['Actions', 'الإجراءات'],
+  ['Active', 'نشط'],
+  ['Inactive', 'غير نشط'],
+  ['Change Role', 'تغيير الدور'],
+  ['You', 'أنت'],
+  ['Reports & Performance', 'التقارير والأداء'],
+  ['Assessment History', 'سجل التقييمات'],
+  ['Export PDF', 'تصدير PDF'],
+  ['My Profile', 'ملفي الشخصي'],
+  ['Full Name', 'الاسم الكامل'],
+  ['Email', 'البريد الإلكتروني'],
+  ['Username', 'اسم المستخدم'],
+  ['Save Changes', 'حفظ التغييرات'],
+  ['Account Information', 'معلومات الحساب'],
+  ['Member Since', 'عضو منذ'],
+  ['Verification', 'التحقق'],
+  ['Last Login', 'آخر تسجيل دخول'],
+  ['Verified', 'موثق'],
+  ['Pending', 'قيد الانتظار'],
+  ['Begin Simulation', 'ابدأ المحاكاة'],
+  ['Exit', 'خروج'],
+  ['Previous', 'السابق'],
+  ['Next Task', 'المهمة التالية'],
+  ['Submit Simulation', 'إرسال المحاكاة'],
+  ['Scenario Context', 'سياق السيناريو'],
+  ['Select the best answer', 'اختر أفضل إجابة'],
+  ['Free text response', 'إجابة نصية حرة'],
+  ['Scenario analysis required', 'يتطلب تحليلاً للموقف'],
+  ['Exit Simulation', 'الخروج من المحاكاة'],
+  ['Continue Simulation', 'متابعة المحاكاة'],
+  ['Exit Now', 'خروج الآن'],
+  ['Ready to Submit?', 'هل أنت جاهز للإرسال؟'],
+  ['Review Answers', 'مراجعة الإجابات'],
+  ['Submit Now', 'إرسال الآن'],
+  ['All tasks answered!', 'تمت الإجابة على جميع المهام!'],
+  ['No TBCLM data yet', 'لا توجد بيانات TBCLM بعد'],
+  ['No strengths identified yet', 'لم يتم تحديد نقاط قوة بعد'],
+  ['No weaknesses identified yet', 'لم يتم تحديد مجالات تطوير بعد'],
+  ['No simulations available for your specialization', 'لا توجد محاكاة متاحة لهذا التخصص'],
+  ['No simulations found matching your filters', 'لا توجد محاكاة مطابقة للفلاتر'],
+  ['No completed assessments', 'لا توجد تقييمات مكتملة'],
+  ['No assessments completed yet. Start a simulation to build your report.', 'لا توجد تقييمات مكتملة بعد. ابدأ محاكاة لبناء تقريرك.'],
+  ['Failed to load reports', 'تعذر تحميل التقارير'],
+  ['Failed to load analytics', 'تعذر تحميل التحليلات'],
+  ['Failed to load users', 'تعذر تحميل المستخدمين'],
+  ['Failed to load evaluator dashboard', 'تعذر تحميل لوحة المقيم'],
+  ['Failed to load dashboard. Please refresh.', 'تعذر تحميل لوحة التحكم. يرجى التحديث.'],
+  ['Under Review', 'قيد المراجعة'],
+  ['Scored', 'تم التقييم'],
+  ['Archived', 'مؤرشف'],
+  ['Ready for Immediate Employment', 'جاهز للتوظيف الفوري'],
+  ['Professionally Prepared', 'مستعد مهنياً'],
+  ['Developing Professional', 'قيد التطور المهني'],
+  ['Needs Structured Development', 'بحاجة إلى تطوير منظم'],
+  ['No Data', 'لا توجد بيانات'],
+  ['Not Assessed', 'غير مقيم'],
+  ['Technical', 'تقني'],
+  ['Behavioral', 'سلوكي'],
+  ['Cognitive', 'معرفي'],
+  ['Leadership', 'قيادة'],
+  ['Market', 'السوق'],
+  ['Technical Competency', 'الكفاءة التقنية'],
+  ['Behavioral Skills', 'المهارات السلوكية'],
+  ['Cognitive Ability', 'القدرة المعرفية'],
+  ['Leadership & Professionalism', 'القيادة والاحترافية'],
+  ['Market Readiness', 'الجاهزية لسوق العمل'],
+  ['Human Resources', 'الموارد البشرية'],
+  ['Computer Science / IT', 'علوم الحاسب / تقنية المعلومات'],
+  ['candidate', 'مرشح'],
+  ['evaluator', 'مقيّم'],
+  ['admin', 'مدير'],
+  ['super admin', 'مدير أعلى'],
+  ['Candidate', 'مرشح'],
+  ['Evaluator', 'مقيّم'],
+  ['Admin', 'مدير'],
+  ['Super Admin', 'مدير أعلى'],
+  ['Not Set', 'غير محدد'],
+  ['Unknown', 'غير معروف'],
+  ['Beginner', 'مبتدئ'],
+  ['Intermediate', 'متوسط'],
+  ['Advanced', 'متقدم'],
+  ['Expert', 'خبير'],
+  ['beginner', 'مبتدئ'],
+  ['intermediate', 'متوسط'],
+  ['advanced', 'متقدم'],
+  ['expert', 'خبير'],
+  ['Search simulations...', 'ابحث في المحاكاة...'],
+  ['Search by username or email...', 'ابحث باسم المستخدم أو البريد الإلكتروني...'],
+  ['Select your field', 'اختر مجالك'],
+  ['Minimum 8 characters', '8 أحرف على الأقل'],
+  ['Creating account...', 'جارٍ إنشاء الحساب...'],
+  ['Signing in...', 'جارٍ تسجيل الدخول...'],
+  ['Scoring your simulation...', 'جارٍ تقييم المحاكاة...'],
+  ['Please wait, this may take a moment', 'يرجى الانتظار، قد يستغرق هذا لحظة'],
+  ['Simulation submitted successfully!', 'تم إرسال المحاكاة بنجاح!'],
+  ['Time is up! Auto-submitting...', 'انتهى الوقت. جارٍ الإرسال تلقائياً...'],
+  ['Resuming your previous attempt', 'جارٍ استكمال محاولتك السابقة'],
+  ['Profile updated successfully!', 'تم تحديث الملف الشخصي بنجاح!'],
+  ['Profile saved!', 'تم حفظ الملف الشخصي!'],
+  ['You have been signed out', 'تم تسجيل خروجك']
+]);
+
+function localizeLiteral(value) {
+  if (currentLocale() !== 'ar' || !value) return value;
+  const trimmed = value.trim();
+  if (!trimmed) return value;
+  return STATIC_ARABIC_TEXT.get(trimmed) || value;
+}
+
+function localizePattern(value) {
+  if (currentLocale() !== 'ar' || !value) return value;
+  const patterns = [
+    [/^Pass:\s*/u, 'النجاح: '],
+    [/^Task (\d+) of (\d+)$/u, 'المهمة $1 من $2'],
+    [/^(\d+) answered$/u, '$1 مجاب عنها'],
+    [/^(\d+) of (\d+) answered$/u, 'تمت الإجابة على $1 من $2'],
+    [/^Attempt #(\d+) · (\d+) Tasks$/u, 'المحاولة رقم $1 · $2 مهام'],
+    [/^Auto Score: ([\d.]+)% · Under Review by Evaluator$/u, 'النتيجة الآلية: $1% · بانتظار مراجعة المقيم'],
+    [/^Candidate ID:\s*/u, 'معرف المرشح: '],
+    [/^Loading simulation\.\.\.$/u, 'جارٍ تحميل المحاكاة...'],
+    [/^Loading submission\.\.\.$/u, 'جارٍ تحميل الإرسال...'],
+    [/^Role updated successfully$/u, 'تم تحديث الدور بنجاح'],
+    [/^Profile updated successfully!$/u, 'تم تحديث الملف الشخصي بنجاح!'],
+    [/^Profile saved!$/u, 'تم حفظ الملف الشخصي!'],
+    [/^Evaluate:\s*/u, 'تقييم: '],
+    [/^You have answered (\d+) of (\d+) tasks\.$/u, 'أجبت عن $1 من أصل $2 مهام.'],
+    [/^(\d+) tasks? unanswered\. Unanswered tasks will receive 0 points\.$/u, 'هناك $1 مهمة بدون إجابة. المهام غير المجابة ستحصل على 0 نقطة.'],
+    [/^Write your detailed response here\.\.\.$/u, 'اكتب إجابتك التفصيلية هنا...'],
+    [/^(\d+) words$/u, '$1 كلمة']
+  ];
+  let out = value;
+  patterns.forEach(([pattern, replacement]) => {
+    out = out.replace(pattern, replacement);
+  });
+  return out;
+}
+
+function localizeStaticUI(root = document.body) {
+  if (currentLocale() !== 'ar' || !root) return;
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const textNodes = [];
+  while (walker.nextNode()) textNodes.push(walker.currentNode);
+  textNodes.forEach((node) => {
+    const translated = localizePattern(localizeLiteral(node.textContent));
+    if (translated !== node.textContent) node.textContent = translated;
+  });
+  root.querySelectorAll?.('input[placeholder], textarea[placeholder]').forEach((el) => {
+    const translated = localizePattern(localizeLiteral(el.getAttribute('placeholder')));
+    if (translated) el.setAttribute('placeholder', translated);
+  });
+}
+
+function startLocalizationObserver() {
+  const observer = new MutationObserver((mutations) => {
+    if (currentLocale() !== 'ar' || State.page === 'landing') return;
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          localizeStaticUI(node);
+        }
+      });
+    });
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+}
 
 // ─── AUTH HELPERS ─────────────────────────────────────────────────────────────
 const Auth = {
@@ -71,13 +950,14 @@ function navigate(page, data = {}) {
 }
 
 function render() {
+  applyLocaleSettings();
   const app = document.getElementById('app');
   if (!app) return;
   if (!Auth.isLoggedIn() && !['landing', 'login', 'register'].includes(State.page)) {
     renderLogin(); return;
   }
   const pages = {
-    landing: renderLanding, login: renderLogin, register: renderRegister,
+    landing: renderLandingShared, login: renderLogin, register: renderRegister,
     dashboard: renderDashboard, simulations: renderSimulationsList,
     sim_active: renderSimulationActive, sim_result: renderSimulationResult,
     analytics: renderAnalytics, users: renderUsers, reports: renderReports,
@@ -85,7 +965,9 @@ function render() {
   };
   const fn = pages[State.page];
   if (fn) fn();
-  else app.innerHTML = `<div class="page-loading"><p style="color:#666">Page not found</p></div>`;
+  else app.innerHTML = `<div class="page-loading"><p style="color:#666">${t('pageNotFound')}</p></div>`;
+  syncLocaleSwitcher();
+  if (currentLocale() === 'ar' && State.page !== 'landing') localizeStaticUI(app);
 }
 
 // ─── LAYOUT ─────────────────────────────────────────────────────────────────────
@@ -101,7 +983,7 @@ function renderWithLayout(title, contentHTML) {
           </div>
           <div>
             <div style="font-weight:800;font-size:16px;color:#fff;letter-spacing:-0.5px">HireTX</div>
-            <div style="font-size:9px;color:#444;letter-spacing:1.2px;text-transform:uppercase">Readiness System</div>
+            <div style="font-size:9px;color:#444;letter-spacing:1.2px;text-transform:uppercase">${t('readinessSystem')}</div>
           </div>
         </div>
       </div>
@@ -113,10 +995,10 @@ function renderWithLayout(title, contentHTML) {
           </div>
           <div style="overflow:hidden;flex:1;min-width:0">
             <div style="font-size:12px;font-weight:700;color:#eee;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${State.user?.full_name || State.user?.username}</div>
-            <div style="font-size:10px;color:#555;text-transform:capitalize">${(State.user?.role || '').replace('_', ' ')}</div>
+            <div style="font-size:10px;color:#555;text-transform:capitalize">${roleLabel(State.user?.role || '')}</div>
           </div>
         </div>
-        <button class="btn-ghost w-full" style="font-size:11px;padding:6px;justify-content:center" onclick="logout()"><i class="fas fa-sign-out-alt mr-1"></i>Sign Out</button>
+        <button class="btn-ghost w-full" style="font-size:11px;padding:6px;justify-content:center" onclick="logout()"><i class="fas fa-sign-out-alt mr-1"></i>${t('signOut')}</button>
       </div>
     </nav>
     <div class="main-content flex flex-col" style="min-height:100vh">
@@ -126,8 +1008,8 @@ function renderWithLayout(title, contentHTML) {
           <span style="font-weight:700;font-size:15px;color:#eee">${title}</span>
         </div>
         <div class="flex items-center gap-3">
-          <span style="font-size:11px;color:#444">${new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</span>
-          <div class="status-badge badge-green"><i class="fas fa-circle" style="font-size:6px;margin-right:4px"></i>System Online</div>
+          <span style="font-size:11px;color:#444">${formatDate(new Date())}</span>
+          <div class="status-badge badge-green"><i class="fas fa-circle" style="font-size:6px;margin-right:4px"></i>${t('systemOnline')}</div>
         </div>
       </div>
       <div class="content-area flex-1 fade-in" id="page-content">
@@ -146,28 +1028,28 @@ function getSidebarItems() {
   let items = [];
   if (role === 'candidate') {
     items = [
-      { icon: 'th-large', label: 'Dashboard', page: 'dashboard' },
-      { icon: 'play-circle', label: 'Simulations', page: 'simulations' },
-      { icon: 'chart-line', label: 'My Reports', page: 'reports' },
-      { icon: 'user-circle', label: 'Profile', page: 'profile' }
+      { icon: 'th-large', label: t('dashboard'), page: 'dashboard' },
+      { icon: 'play-circle', label: t('simulations'), page: 'simulations' },
+      { icon: 'chart-line', label: t('myReports'), page: 'reports' },
+      { icon: 'user-circle', label: t('profile'), page: 'profile' }
     ];
   } else if (role === 'evaluator') {
     items = [
-      { icon: 'clipboard-list', label: 'Review Queue', page: 'evaluator' },
-      { icon: 'play-circle', label: 'Simulations', page: 'simulations' },
-      { icon: 'user-circle', label: 'Profile', page: 'profile' }
+      { icon: 'clipboard-list', label: t('reviewQueue'), page: 'evaluator' },
+      { icon: 'play-circle', label: t('simulations'), page: 'simulations' },
+      { icon: 'user-circle', label: t('profile'), page: 'profile' }
     ];
   } else if (Auth.can('admin')) {
     items = [
-      { icon: 'th-large', label: 'Dashboard', page: 'dashboard' },
-      { icon: 'play-circle', label: 'Simulations', page: 'simulations' },
-      { icon: 'chart-bar', label: 'Analytics', page: 'analytics' },
-      { icon: 'users', label: 'Users', page: 'users' },
-      { icon: 'file-pdf', label: 'Reports', page: 'reports' },
-      { icon: 'user-circle', label: 'Profile', page: 'profile' }
+      { icon: 'th-large', label: t('dashboard'), page: 'dashboard' },
+      { icon: 'play-circle', label: t('simulations'), page: 'simulations' },
+      { icon: 'chart-bar', label: t('analytics'), page: 'analytics' },
+      { icon: 'users', label: t('users'), page: 'users' },
+      { icon: 'file-pdf', label: t('reports'), page: 'reports' },
+      { icon: 'user-circle', label: t('profile'), page: 'profile' }
     ];
   }
-  return `<div class="sidebar-label">Navigation</div>
+  return `<div class="sidebar-label">${t('navigation')}</div>
   ${items.map(it => `<div class="sidebar-item ${pg === it.page ? 'active' : ''}" onclick="navigate('${it.page}')">
     <i class="fas fa-${it.icon}"></i><span>${it.label}</span>
   </div>`).join('')}`;
@@ -179,11 +1061,928 @@ function logout() {
   Auth.clear();
   State.user = null; State.token = null;
   navigate('landing');
-  notify('You have been signed out', 'info');
+  notify(t('signedOut'), 'info');
 }
 
 // ─── LANDING PAGE ──────────────────────────────────────────────────────────────
 function renderLanding() {
+  if (currentLocale() === 'en') {
+    renderLandingLegacy();
+    return;
+  }
+  const heroStats = [
+    { value: '8,420', label: 'جلسة تقييم مكتملة' },
+    { value: '127', label: 'محاكاة وظيفية' },
+    { value: '91%', label: 'معدل اجتياز أولي' }
+  ];
+  const steps = [
+    { number: '1', title: 'سجل', text: 'أنشئ حسابك وحدد المسار المهني المناسب لك.' },
+    { number: '2', title: 'اختر المسار', text: 'ابدأ بمحاكاة الموارد البشرية أو تقنية المعلومات.' },
+    { number: '3', title: 'نفذ المهام المهنية', text: 'أجب على سيناريوهات واقعية تقيس جاهزيتك الفعلية.' },
+    { number: '4', title: 'تحصل على تحليل TBCLM', text: 'شاهد توزيع نقاطك عبر المحاور الخمسة بوضوح.' },
+    { number: '5', title: 'احصل على تقريرك', text: 'استلم تقريراً قابلاً للمشاركة مع توصيات تطوير مباشرة.' }
+  ];
+  const axes = [
+    { key: 'T', title: 'المهارات التقنية', weight: '30%', icon: 'gear', color: '#68a4ff', note: 'المعرفة التخصصية وتطبيقاتها العملية' },
+    { key: 'B', title: 'السلوكيات الاحترافية', weight: '25%', icon: 'brain', color: '#f375d6', note: 'التواصل والالتزام والمرونة' },
+    { key: 'C', title: 'التحليل واتخاذ القرار', weight: '20%', icon: 'gavel', color: '#65d3ff', note: 'المنطق وحل المشكلات تحت الضغط' },
+    { key: 'L', title: 'القيادة والتأثير', weight: '15%', icon: 'bullseye', color: '#ffb53c', note: 'المبادرة والتنظيم وتحمل المسؤولية' },
+    { key: 'M', title: 'الجاهزية لسوق العمل', weight: '10%', icon: 'chart-column', color: '#5df2b1', note: 'الوعي المهني والقدرة على التكيف' }
+  ];
+  const trackCards = [
+    {
+      badge: 'HR',
+      meta: '20 سيناريو . موارد بشرية',
+      title: 'إدارة الموارد البشرية',
+      text: 'محاكاة تغطي التوظيف، علاقات الموظفين، الامتثال، وإدارة الأداء داخل بيئة عمل حقيقية.',
+      chips: ['التوظيف', 'الأداء', 'المقابلات', 'السياسات'],
+      tone: 'gold'
+    },
+    {
+      badge: 'IT',
+      meta: '18 سيناريو . تقنية معلومات',
+      title: 'تشغيل تكنولوجيا المعلومات',
+      text: 'مهام عملية في الدعم الفني، إدارة الأنظمة، استكشاف الأعطال، والتواصل مع أصحاب المصلحة.',
+      chips: ['الدعم', 'الشبكات', 'الأنظمة', 'التحليل'],
+      tone: 'blue'
+    }
+  ];
+  const comparisonRows = [
+    { label: 'محاكاة عمل واقعية', hiretx: true, legacy: false },
+    { label: 'تقييم جاهزية متعدد الأبعاد', hiretx: true, legacy: false },
+    { label: 'قياس موزون وفق TBCLM', hiretx: true, legacy: false },
+    { label: 'تقرير تطوير شخصي', hiretx: true, legacy: false },
+    { label: 'نتيجة واضحة قابلة للمشاركة', hiretx: true, legacy: false }
+  ];
+  const readinessRows = [
+    { score: '84', label: 'جاهز للعمل', width: '84%', tone: '#1fe0a4' },
+    { score: '90', label: 'T', width: '90%', tone: '#f2b53d' },
+    { score: '82', label: 'B', width: '82%', tone: '#f2b53d' },
+    { score: '76', label: 'C', width: '76%', tone: '#f2b53d' },
+    { score: '71', label: 'L', width: '71%', tone: '#f2b53d' },
+    { score: '88', label: 'M', width: '88%', tone: '#f2b53d' }
+  ];
+
+  const statsHTML = heroStats.map((item) => `
+    <div class="landing-stat">
+      <strong>${item.value}</strong>
+      <span>${item.label}</span>
+    </div>
+  `).join('');
+
+  const stepsHTML = steps.map((step) => `
+    <div class="landing-step">
+      <div class="landing-step__bubble">${step.number}</div>
+      <h3>${step.title}</h3>
+      <p>${step.text}</p>
+    </div>
+  `).join('');
+
+  const axesCardsHTML = axes.map((axis) => `
+    <div class="landing-axis-card">
+      <div class="landing-axis-card__icon" style="background:${axis.color}16;border-color:${axis.color}33">
+        <i class="fas fa-${axis.icon}" style="color:${axis.color}"></i>
+      </div>
+      <div class="landing-axis-card__meta">
+        <span>${axis.key}</span>
+        <strong>${axis.title}</strong>
+        <small>${axis.note}</small>
+      </div>
+      <div class="landing-axis-card__weight" style="color:${axis.color}">${axis.weight}</div>
+    </div>
+  `).join('');
+
+  const axesRowsHTML = axes.map((axis) => `
+    <div class="landing-axis-row">
+      <span>${axis.weight}</span>
+      <strong>${axis.title}</strong>
+      <em style="color:${axis.color}">${axis.key}</em>
+    </div>
+  `).join('');
+
+  const tracksHTML = trackCards.map((track) => `
+    <article class="landing-track ${track.tone === 'blue' ? 'landing-track--blue' : ''}">
+      <div class="landing-track__top">
+        <span>${track.meta}</span>
+        <div class="landing-track__badge">${track.badge}</div>
+      </div>
+      <h3>${track.title}</h3>
+      <p>${track.text}</p>
+      <div class="landing-track__chips">
+        ${track.chips.map((chip) => `<span>${chip}</span>`).join('')}
+      </div>
+      <button onclick="navigate('register')">ابدأ المسار <i class="fas fa-arrow-left"></i></button>
+    </article>
+  `).join('');
+
+  const comparisonHTML = comparisonRows.map((row) => `
+    <div class="landing-compare__row">
+      <span>${row.legacy ? '<i class="fas fa-check"></i>' : '<i class="fas fa-xmark"></i>'}</span>
+      <strong>${row.hiretx ? '<i class="fas fa-circle-check"></i>' : '<i class="fas fa-xmark"></i>'}</strong>
+      <p>${row.label}</p>
+    </div>
+  `).join('');
+
+  const readinessHTML = readinessRows.map((row, index) => `
+    <div class="landing-card__row ${index === 0 ? 'landing-card__row--headline' : ''}">
+      <span>${row.score}%</span>
+      <div class="landing-card__bar">
+        <div style="width:${row.width};background:${row.tone}"></div>
+      </div>
+      <strong>${row.label}</strong>
+    </div>
+  `).join('');
+
+  document.getElementById('app').innerHTML = `
+  <style>
+    .landing-shell {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top center, rgba(255, 188, 33, 0.18), transparent 34%),
+        radial-gradient(circle at 12% 10%, rgba(255, 188, 33, 0.08), transparent 24%),
+        linear-gradient(180deg, #090909 0%, #050505 100%);
+      color: #f5efe1;
+      direction: rtl;
+      font-family: 'Cairo', 'Inter', sans-serif;
+    }
+    .landing-shell * { box-sizing: border-box; }
+    .landing-container { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    .landing-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      background: rgba(7, 7, 7, 0.88);
+      border-bottom: 1px solid rgba(255, 191, 54, 0.08);
+    }
+    .landing-nav__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 18px 0;
+    }
+    .landing-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .landing-brand__mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #ffcc45 0%, #d79a14 100%);
+      color: #151007;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+    .landing-brand strong {
+      display: block;
+      color: #fff1cd;
+      font-size: 18px;
+      line-height: 1;
+    }
+    .landing-brand span {
+      display: block;
+      color: #8f7e59;
+      font-size: 10px;
+      margin-top: 4px;
+    }
+    .landing-links, .landing-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .landing-links a {
+      color: #b9aa8a;
+      font-size: 14px;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .landing-links a:hover { color: #fff3cd; }
+    .landing-btn {
+      border-radius: 14px;
+      border: 1px solid rgba(255, 195, 64, 0.22);
+      padding: 12px 24px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+    .landing-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+    .landing-btn:focus { outline: 2px solid #ffd700; outline-offset: 2px; }
+    .landing-btn:active { transform: translateY(0); }
+    .landing-btn--primary {
+      background: linear-gradient(135deg, #ffcb4c 0%, #d99911 100%);
+      color: #1d1406;
+      box-shadow: 0 14px 35px rgba(217, 153, 17, 0.25);
+      border-color: rgba(255, 215, 0, 0.4);
+    }
+    .landing-btn--primary:hover { box-shadow: 0 18px 45px rgba(217, 153, 17, 0.35); background: linear-gradient(135deg, #ffd700 0%, #e6b800 100%); }
+    .landing-btn--ghost {
+      background: rgba(255, 255, 255, 0.05);
+      color: #f7d98b;
+      border-color: rgba(255, 215, 0, 0.2);
+    }
+    .landing-btn--ghost:hover { background: rgba(255, 255, 255, 0.1); color: #ffeb99; }
+    .landing-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(255, 215, 0, 0.12);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-size: 12px;
+      box-shadow: 0 0 18px rgba(255, 203, 76, 0.1);
+    }
+    .landing-hero {
+      display: grid;
+      grid-template-columns: minmax(300px, 390px) minmax(0, 1fr);
+      gap: 54px;
+      align-items: center;
+      background: radial-gradient(circle at top left, rgba(255, 203, 76, 0.08), transparent 24%), radial-gradient(circle at 85% 15%, rgba(255, 215, 0, 0.12), transparent 18%);
+      border: 1px solid rgba(255, 203, 76, 0.12);
+      box-shadow: inset 0 0 80px rgba(255, 203, 76, 0.08);
+    }
+      padding: 52px 0 72px;
+    }
+    .landing-badges {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .landing-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid rgba(255, 194, 62, 0.16);
+      background: rgba(255, 186, 41, 0.06);
+      border-radius: 999px;
+      color: #cfb57a;
+      font-size: 12px;
+    }
+    .landing-hero h1 {
+      font-size: clamp(2.5rem, 5vw, 4.7rem);
+      line-height: 1.1;
+      margin: 0 0 18px;
+      color: #f8f3e8;
+      font-weight: 900;
+      letter-spacing: -1.8px;
+    }
+    .landing-hero h1 span { color: #f0b332; }
+    .landing-hero p {
+      max-width: 620px;
+      color: #93856a;
+      font-size: 16px;
+      line-height: 1.95;
+      margin: 0 0 28px;
+    }
+    .landing-hero__cta {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+    .landing-hero__meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      max-width: 520px;
+    }
+    .landing-stat strong {
+      display: block;
+      color: #f3ba3b;
+      font-size: 28px;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .landing-stat span {
+      display: block;
+      color: #796c57;
+      font-size: 12px;
+    }
+    .landing-card {
+      border: 1px solid rgba(255, 190, 52, 0.35);
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at top center, rgba(44, 240, 177, 0.12), transparent 30%),
+        linear-gradient(180deg, rgba(14, 15, 18, 0.96), rgba(10, 10, 12, 0.96));
+      padding: 26px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(255, 191, 64, 0.08);
+    }
+    .landing-card__tag {
+      display: inline-flex;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(46, 228, 170, 0.12);
+      color: #4ce8b1;
+      font-size: 11px;
+      margin-bottom: 18px;
+    }
+    .landing-card__eyebrow {
+      color: #7d715d;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+    .landing-card__gauge {
+      width: 100%;
+      max-width: 260px;
+      margin: 0 auto 6px;
+      display: block;
+    }
+    .landing-card__score {
+      text-align: center;
+      margin-top: -52px;
+      margin-bottom: 18px;
+      position: relative;
+      z-index: 1;
+    }
+    .landing-card__score strong {
+      display: block;
+      font-size: 44px;
+      line-height: 1;
+      color: #f7f4ec;
+    }
+    .landing-card__score span {
+      color: #8a7d67;
+      font-size: 13px;
+    }
+    .landing-card__row {
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr) 68px;
+      gap: 10px;
+      align-items: center;
+      margin-top: 12px;
+      color: #a19277;
+      font-size: 12px;
+    }
+    .landing-card__row strong { color: #f4b63e; }
+    .landing-card__row--headline strong { color: #46e1a9; }
+    .landing-card__bar {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .landing-card__bar div {
+      height: 100%;
+      border-radius: inherit;
+    }
+    .landing-section {
+      padding: 34px 0 76px;
+      border-top: 1px solid rgba(255, 194, 62, 0.06);
+    }
+    .landing-section__head {
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto 34px;
+    }
+    .landing-section__head span {
+      display: inline-flex;
+      margin-bottom: 14px;
+      padding: 7px 12px;
+      background: rgba(255, 191, 64, 0.08);
+      border: 1px solid rgba(255, 191, 64, 0.12);
+      color: #c7a55d;
+      border-radius: 999px;
+      font-size: 11px;
+    }
+    .landing-section__head h2 {
+      margin: 0 0 10px;
+      color: #f5f1e7;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.2;
+      font-weight: 900;
+    }
+    .landing-section__head h2 span { color: #efb63b; }
+    .landing-section__head p {
+      margin: 0;
+      color: #867861;
+      line-height: 1.9;
+      font-size: 15px;
+    }
+    .landing-steps {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 18px;
+      position: relative;
+    }
+    .landing-steps::before {
+      content: '';
+      position: absolute;
+      top: 29px;
+      right: 8%;
+      left: 8%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(231, 176, 52, 0.4), transparent);
+    }
+    .landing-step {
+      position: relative;
+      text-align: center;
+      padding: 0 10px;
+    }
+    .landing-step__bubble {
+      width: 58px;
+      height: 58px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 191, 64, 0.34);
+      background: linear-gradient(180deg, rgba(38, 30, 10, 0.9), rgba(12, 12, 12, 0.95));
+      color: #f4b53c;
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+      font-weight: 800;
+    }
+    .landing-step h3 {
+      margin: 0 0 8px;
+      color: #f4efe6;
+      font-size: 17px;
+      font-weight: 800;
+    }
+    .landing-step p {
+      margin: 0;
+      color: #7e715d;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .landing-model {
+      border-radius: 28px;
+      background: linear-gradient(180deg, rgba(18, 18, 22, 0.94), rgba(9, 9, 11, 0.96));
+      border: 1px solid rgba(255, 191, 64, 0.08);
+      padding: 30px;
+    }
+    .landing-axis-cards {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+    .landing-axis-card {
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 18px 16px;
+      min-height: 148px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .landing-axis-card__icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      border: 1px solid;
+      display: grid;
+      place-items: center;
+    }
+    .landing-axis-card__meta span {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 4px;
+      color: #a19376;
+    }
+    .landing-axis-card__meta strong {
+      display: block;
+      color: #f8f4eb;
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+    .landing-axis-card__meta small {
+      color: #776b58;
+      line-height: 1.7;
+      display: block;
+      font-size: 12px;
+    }
+    .landing-axis-card__weight {
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .landing-axis-table {
+      margin-top: 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .landing-axis-row {
+      display: grid;
+      grid-template-columns: 70px minmax(0, 1fr) 28px;
+      align-items: center;
+      gap: 16px;
+      padding: 15px 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #8c7e68;
+      font-size: 14px;
+    }
+    .landing-axis-row strong {
+      color: #f7f2e8;
+      font-weight: 700;
+    }
+    .landing-axis-row em {
+      font-style: normal;
+      font-weight: 800;
+      text-align: center;
+    }
+    .landing-status {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+    .landing-status__box {
+      border-radius: 18px;
+      padding: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      text-align: center;
+      font-size: 14px;
+    }
+    .landing-status__box strong {
+      display: block;
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
+    .landing-status__box--bad { background: rgba(120, 25, 37, 0.32); color: #ff7a8e; }
+    .landing-status__box--mid { background: rgba(126, 89, 22, 0.28); color: #ffc35b; }
+    .landing-status__box--good { background: rgba(16, 88, 63, 0.28); color: #65efb7; }
+    .landing-tracks {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+    .landing-track {
+      border-radius: 22px;
+      padding: 24px;
+      border: 1px solid rgba(255, 190, 52, 0.1);
+      background:
+        radial-gradient(circle at top right, rgba(255, 190, 52, 0.12), transparent 28%),
+        linear-gradient(180deg, rgba(19, 18, 17, 0.95), rgba(11, 11, 12, 0.96));
+    }
+    .landing-track--blue {
+      background:
+        radial-gradient(circle at top right, rgba(92, 132, 255, 0.14), transparent 28%),
+        linear-gradient(180deg, rgba(19, 21, 31, 0.95), rgba(11, 12, 17, 0.96));
+    }
+    .landing-track__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: #7b6e5a;
+      font-size: 12px;
+      margin-bottom: 18px;
+    }
+    .landing-track__badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: rgba(255, 191, 64, 0.12);
+      color: #f0b53b;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+    }
+    .landing-track--blue .landing-track__badge {
+      background: rgba(104, 164, 255, 0.14);
+      color: #82b7ff;
+    }
+    .landing-track h3 {
+      margin: 0 0 10px;
+      color: #f7f2e8;
+      font-size: 28px;
+      font-weight: 800;
+    }
+    .landing-track p {
+      margin: 0 0 18px;
+      color: #897c68;
+      line-height: 1.9;
+      font-size: 14px;
+    }
+    .landing-track__chips {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .landing-track__chips span {
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.03);
+      color: #a79778;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 12px;
+    }
+    .landing-track button {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 18px;
+      background: linear-gradient(135deg, #ffcb4c 0%, #d99911 100%);
+      color: #1b1408;
+      font-family: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .landing-track--blue button {
+      background: rgba(73, 110, 208, 0.24);
+      color: #dce7ff;
+      border: 1px solid rgba(112, 150, 255, 0.2);
+    }
+    .landing-compare {
+      border-radius: 22px;
+      border: 1px solid rgba(255, 191, 64, 0.08);
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .landing-compare__head,
+    .landing-compare__row {
+      display: grid;
+      grid-template-columns: 120px 120px minmax(0, 1fr);
+      align-items: center;
+      gap: 16px;
+      padding: 16px 22px;
+    }
+    .landing-compare__head {
+      background: rgba(255, 191, 64, 0.04);
+      color: #cdae67;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .landing-compare__row {
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .landing-compare__row span,
+    .landing-compare__row strong {
+      text-align: center;
+      font-size: 18px;
+    }
+    .landing-compare__row span { color: #f36c7a; }
+    .landing-compare__row strong { color: #60e8b2; }
+    .landing-compare__row p {
+      margin: 0;
+      color: #ebe5d6;
+      font-size: 14px;
+    }
+    .landing-cta {
+      text-align: center;
+      padding: 86px 24px;
+      background:
+        radial-gradient(circle at center, rgba(255, 191, 64, 0.16), transparent 26%),
+        linear-gradient(180deg, rgba(12, 12, 12, 0.98), rgba(6, 6, 6, 0.98));
+    }
+    .landing-cta small {
+      display: block;
+      color: #c7b184;
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+    .landing-cta h2 {
+      margin: 0 0 14px;
+      font-size: clamp(2.2rem, 5vw, 3.7rem);
+      color: #f8f2e7;
+      font-weight: 900;
+    }
+    .landing-cta p {
+      max-width: 620px;
+      margin: 0 auto 24px;
+      color: #8e8066;
+      line-height: 1.9;
+      font-size: 15px;
+    }
+    .landing-footer {
+      padding: 34px 0 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .landing-footer__grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 22px;
+    }
+    .landing-footer h4 {
+      margin: 0 0 12px;
+      color: #f0e4c4;
+      font-size: 15px;
+    }
+    .landing-footer p,
+    .landing-footer a {
+      display: block;
+      margin: 0 0 9px;
+      color: #786b57;
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .landing-footer__bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      color: #625748;
+      font-size: 12px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    @media (max-width: 1080px) {
+      .landing-links { display: none; }
+      .landing-hero,
+      .landing-footer__grid { grid-template-columns: 1fr; }
+      .landing-axis-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .landing-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 780px) {
+      .landing-container { width: min(100% - 20px, 100%); }
+      .landing-nav__inner,
+      .landing-actions,
+      .landing-hero__cta { gap: 10px; }
+      .landing-actions { justify-content: flex-start; }
+      .landing-hero { padding-top: 28px; gap: 28px; }
+      .landing-hero__meta,
+      .landing-status,
+      .landing-tracks,
+      .landing-compare__head,
+      .landing-compare__row { grid-template-columns: 1fr; }
+      .landing-steps,
+      .landing-axis-cards { grid-template-columns: 1fr; }
+      .landing-steps::before { display: none; }
+      .landing-card,
+      .landing-model,
+      .landing-track { padding: 20px; }
+      .landing-footer__bottom { justify-content: center; text-align: center; }
+    }
+  </style>
+  <div class="landing-shell">
+    <nav class="landing-nav">
+      <div class="landing-container landing-nav__inner">
+        <div class="landing-brand">
+          <div class="landing-brand__mark">HX</div>
+          <div>
+            <strong>HireTX</strong>
+            <span>منصة قياس الجاهزية المهنية</span>
+          </div>
+        </div>
+        <div class="landing-links">
+          <a href="#hero">ابدأ</a>
+          <a href="#how">كيف يعمل</a>
+          <a href="#model">النموذج</a>
+          <a href="#tracks">المسارات</a>
+          <a href="#compare">المقارنة</a>
+        </div>
+        <div class="landing-actions">
+          <button class="landing-btn landing-btn--ghost" onclick="navigate('login')">تسجيل الدخول</button>
+          <button class="landing-btn landing-btn--primary" onclick="navigate('register')">ابدأ مجاناً</button>
+        </div>
+      </div>
+    </nav>
+
+    <section class="landing-container landing-hero" id="hero">
+      <div class="landing-hero__copy">
+        <div class="landing-badges">
+          <span class="landing-pill">نموذج تقييم عملي</span>
+          <span class="landing-pill">جاهزية لسوق العمل</span>
+          <span class="landing-pill">تغذية راجعة مباشرة</span>
+        </div>
+        <h1>أثبت جاهزيتك <span>الحقيقية</span><br/>للعمل في سوق اليوم</h1>
+        <p>منصة HireTX تقدم تقييماً عملياً مبنياً على إطار TBCLM لقياس الجاهزية المهنية بشكل واقعي، مع نتائج واضحة، تحليل موزون، وتوصيات تساعدك على الانتقال من الاستعداد إلى الفرصة.</p>
+        <div class="landing-hero__cta">
+          <button class="landing-btn landing-btn--primary" onclick="navigate('register')">ابدأ تقييمك <i class="fas fa-arrow-left"></i></button>
+          <button class="landing-btn landing-btn--ghost" onclick="navigate('login')">استكشف المنصة</button>
+        </div>
+        <div class="landing-hero__meta">${statsHTML}</div>
+      </div>
+
+      <aside class="landing-card">
+        <div class="landing-card__tag">جاهزية مرشحة</div>
+        <div class="landing-card__eyebrow">مؤشر الجاهزية المهنية</div>
+        <svg class="landing-card__gauge" viewBox="0 0 260 160" fill="none" aria-hidden="true">
+          <path d="M40 126C48 75 86 38 130 38C174 38 212 75 220 126" stroke="rgba(255,255,255,0.12)" stroke-width="18" stroke-linecap="round"/>
+          <path d="M40 126C48 75 86 38 130 38C174 38 212 75 220 126" stroke="#20df9d" stroke-width="18" stroke-linecap="round" pathLength="100" stroke-dasharray="84 100"/>
+        </svg>
+        <div class="landing-card__score">
+          <strong>84</strong>
+          <span>جاهز للعمل</span>
+        </div>
+        ${readinessHTML}
+      </aside>
+    </section>
+
+    <section class="landing-section" id="how">
+      <div class="landing-container">
+        <div class="landing-section__head">
+          <span>خطوات بسيطة</span>
+          <h2>كيف يعمل <span>HireTX</span></h2>
+          <p>تجربة تقييم مصممة لتكون واضحة وسريعة ومهنية منذ التسجيل وحتى استلام التقرير النهائي.</p>
+        </div>
+        <div class="landing-steps">${stepsHTML}</div>
+      </div>
+    </section>
+
+    <section class="landing-section" id="model">
+      <div class="landing-container">
+        <div class="landing-section__head">
+          <span>نموذج التقييم</span>
+          <h2>نموذج <span>TBCLM</span> للجاهزية المهنية</h2>
+          <p>نموذج موزون يجمع بين المهارات الفنية والسلوكية والتحليلية والقيادية والجاهزية لسوق العمل ليمنحك صورة أقرب للحقيقة.</p>
+        </div>
+        <div class="landing-model">
+          <div class="landing-axis-cards">${axesCardsHTML}</div>
+          <div class="landing-axis-table">${axesRowsHTML}</div>
+          <div class="landing-status">
+            <div class="landing-status__box landing-status__box--bad"><strong>0 - 49</strong> يحتاج إلى تطوير</div>
+            <div class="landing-status__box landing-status__box--mid"><strong>50 - 74</strong> في طور التحضير</div>
+            <div class="landing-status__box landing-status__box--good"><strong>75 - 100</strong> جاهز للعمل</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="landing-section" id="tracks">
+      <div class="landing-container">
+        <div class="landing-section__head">
+          <span>المسارات المهنية</span>
+          <h2>اختر مسارك <span>المهني</span></h2>
+          <p>ابدأ في المسار الأقرب لتخصصك واستلم تقييماً مبنياً على مواقف وظيفية واقعية داخل نفس المجال.</p>
+        </div>
+        <div class="landing-tracks">${tracksHTML}</div>
+
+        <div class="landing-section__head" id="compare" style="margin-top:14px">
+          <h2><span>HireTX</span> مقابل الطرق التقليدية</h2>
+        </div>
+        <div class="landing-compare">
+          <div class="landing-compare__head">
+            <span>التقليدي</span>
+            <strong>HireTX</strong>
+            <p>الميزة</p>
+          </div>
+          ${comparisonHTML}
+        </div>
+      </div>
+    </section>
+
+    <section class="landing-cta">
+      <div class="landing-container">
+        <small>DZ</small>
+        <h2>جاهز لإثبات قدراتك؟</h2>
+        <p>أنشئ حسابك الآن وابدأ أول تقييم عملي داخل HireTX لتحصل على نتيجة واضحة وتقرير يساعدك في خطواتك القادمة.</p>
+        <button class="landing-btn landing-btn--primary" onclick="navigate('register')">ابدأ معنا الآن</button>
+      </div>
+    </section>
+
+    <footer class="landing-footer">
+      <div class="landing-container">
+        <div class="landing-footer__grid">
+          <div>
+            <h4>HireTX</h4>
+            <p>منصة عربية لقياس الجاهزية المهنية عبر محاكاة واقعية وتقييم موزون يركز على الاستعداد الحقيقي للعمل.</p>
+          </div>
+          <div>
+            <h4>المنصة</h4>
+            <a href="#how">كيف تعمل</a>
+            <a href="#model">نموذج TBCLM</a>
+            <a href="#tracks">المسارات</a>
+          </div>
+          <div>
+            <h4>الوصول</h4>
+            <a href="javascript:void(0)" onclick="navigate('login')">تسجيل الدخول</a>
+            <a href="javascript:void(0)" onclick="navigate('register')">إنشاء حساب</a>
+            <a href="javascript:void(0)" onclick="navigate('login')">نسخة تجريبية</a>
+          </div>
+          <div>
+            <h4>المصادر</h4>
+            <p>تقارير جاهزية</p>
+            <p>نتائج قابلة للمشاركة</p>
+            <p>تحليلات مهنية</p>
+          </div>
+        </div>
+        <div class="landing-footer__bottom">
+          <span>© 2026 HireTX. جميع الحقوق محفوظة.</span>
+          <span>x2TBCLM v1</span>
+        </div>
+      </div>
+    </footer>
+  </div>`;
+}
+
+function renderLandingLegacy() {
   document.getElementById('app').innerHTML = `
   <div style="min-height:100vh;background:#0A0A0A" class="hero-bg">
     <!-- NAV -->
@@ -302,34 +2101,34 @@ function renderLogin() {
           <span style="font-weight:900;font-size:20px;color:#000">HX</span>
         </div>
         <h1 style="font-size:1.8rem;font-weight:900;color:#fff;letter-spacing:-0.5px">HireTX</h1>
-        <p style="font-size:13px;color:#555;margin-top:4px">National Employability Readiness System</p>
+        <p style="font-size:13px;color:#555;margin-top:4px">${t('appTagline')}</p>
       </div>
       <div class="card-dark" style="padding:32px">
-        <h2 style="font-size:18px;font-weight:700;color:#eee;margin-bottom:24px">Sign in to your account</h2>
+        <h2 style="font-size:18px;font-weight:700;color:#eee;margin-bottom:24px">${t('signInToAccount')}</h2>
         <div id="login-err" class="notification error" style="display:none;position:relative;top:0;right:0;margin-bottom:16px;max-width:none;animation:none"></div>
         <form onsubmit="doLogin(event)">
           <div style="margin-bottom:16px">
-            <label style="font-size:12px;font-weight:600;color:#888;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Email Address</label>
+            <label style="font-size:12px;font-weight:600;color:#888;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">${t('emailAddress')}</label>
             <input type="email" id="login-email" placeholder="you@example.com" required style="width:100%" autocomplete="email"/>
           </div>
           <div style="margin-bottom:20px">
-            <label style="font-size:12px;font-weight:600;color:#888;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Password</label>
+            <label style="font-size:12px;font-weight:600;color:#888;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">${t('password')}</label>
             <div style="position:relative">
-              <input type="password" id="login-pass" placeholder="Enter password" required style="width:100%;padding-right:42px" autocomplete="current-password"/>
+              <input type="password" id="login-pass" placeholder="${t('password')}" required style="width:100%;padding-right:42px" autocomplete="current-password"/>
               <button type="button" onclick="togglePw('login-pass','eye-lp')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:#666;cursor:pointer"><i id="eye-lp" class="fas fa-eye"></i></button>
             </div>
           </div>
           <button type="submit" class="btn-gold w-full" style="justify-content:center;font-size:14px;padding:13px" id="login-btn">
-            <i class="fas fa-sign-in-alt mr-2"></i>Sign In
+            <i class="fas fa-sign-in-alt mr-2"></i>${t('signIn')}
           </button>
         </form>
         <div style="text-align:center;margin-top:20px">
-          <span style="font-size:13px;color:#555">Don't have an account? </span>
-          <button onclick="navigate('register')" style="background:none;border:none;color:#FFD700;font-size:13px;font-weight:600;cursor:pointer">Create account</button>
+          <span style="font-size:13px;color:#555">${t('dontHaveAccount')} </span>
+          <button onclick="navigate('register')" style="background:none;border:none;color:#FFD700;font-size:13px;font-weight:600;cursor:pointer">${t('createAccount')}</button>
         </div>
       </div>
       <div style="text-align:center;margin-top:16px">
-        <button onclick="navigate('landing')" style="background:none;border:none;color:#444;font-size:12px;cursor:pointer"><i class="fas fa-arrow-left mr-1"></i>Back to Home</button>
+        <button onclick="navigate('landing')" style="background:none;border:none;color:#444;font-size:12px;cursor:pointer"><i class="fas fa-arrow-left mr-1"></i>${t('backHome')}</button>
       </div>
     </div>
   </div>`;
@@ -342,23 +2141,23 @@ async function doLogin(e) {
   const email = document.getElementById('login-email').value.trim();
   const pass = document.getElementById('login-pass').value;
   btn.disabled = true;
-  btn.innerHTML = '<div class="loading-spinner" style="width:16px;height:16px;margin-right:8px"></div>Signing in...';
+  btn.innerHTML = `<div class="loading-spinner" style="width:16px;height:16px;margin-right:8px"></div>${t('signingIn')}`;
   errEl.style.display = 'none';
   try {
     const { data } = await API.post('/auth/login', { email, password: pass });
     if (data.success) {
       Auth.save(data.data.token, data.data.user);
-      notify(`Welcome back, ${data.data.user.full_name || data.data.user.username}!`, 'success');
+      notify(t('welcomeBack', { name: data.data.user.full_name || data.data.user.username }), 'success');
       const role = data.data.user.role;
       if (role === 'evaluator') navigate('evaluator');
       else navigate('dashboard');
     }
   } catch (err) {
-    const msg = err.response?.data?.message || 'Invalid email or password';
+    const msg = translateApiMessage(err.response?.data?.message || t('invalidEmailOrPassword'));
     errEl.textContent = msg;
     errEl.style.display = 'block';
     btn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Sign In';
+    btn.innerHTML = `<i class="fas fa-sign-in-alt mr-2"></i>${t('signIn')}`;
   }
 }
 
@@ -371,48 +2170,48 @@ function renderRegister() {
         <div class="gold-gradient rounded-xl flex items-center justify-center mx-auto mb-3" style="width:48px;height:48px">
           <span style="font-weight:900;font-size:18px;color:#000">HX</span>
         </div>
-        <h1 style="font-size:1.6rem;font-weight:900;color:#fff">Create Your Account</h1>
-        <p style="font-size:13px;color:#555;margin-top:4px">Join the national employability readiness platform</p>
+        <h1 style="font-size:1.6rem;font-weight:900;color:#fff">${t('createYourAccount')}</h1>
+        <p style="font-size:13px;color:#555;margin-top:4px">${t('joinPlatform')}</p>
       </div>
       <div class="card-dark" style="padding:32px">
         <div id="reg-err" class="notification error" style="display:none;position:relative;top:0;right:0;margin-bottom:16px;max-width:none;animation:none"></div>
         <form onsubmit="doRegister(event)">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
             <div>
-              <label style="font-size:11px;font-weight:600;color:#888;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px">Full Name</label>
+              <label style="font-size:11px;font-weight:600;color:#888;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px">${t('fullName')}</label>
               <input type="text" id="reg-name" placeholder="Juan Dela Cruz" style="width:100%" required autocomplete="name"/>
             </div>
             <div>
-              <label style="font-size:11px;font-weight:600;color:#888;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px">Username</label>
+              <label style="font-size:11px;font-weight:600;color:#888;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px">${t('username')}</label>
               <input type="text" id="reg-user" placeholder="juan_cruz" style="width:100%" required autocomplete="username" minlength="3" maxlength="30"/>
             </div>
           </div>
           <div style="margin-bottom:14px">
-            <label style="font-size:11px;font-weight:600;color:#888;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px">Email Address</label>
+            <label style="font-size:11px;font-weight:600;color:#888;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px">${t('emailAddress')}</label>
             <input type="email" id="reg-email" placeholder="you@example.com" style="width:100%" required autocomplete="email"/>
           </div>
           <div style="margin-bottom:14px">
-            <label style="font-size:11px;font-weight:600;color:#888;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px">Specialization</label>
+            <label style="font-size:11px;font-weight:600;color:#888;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px">${t('specialization')}</label>
             <select id="reg-spec" style="width:100%" required>
-              <option value="">Select your field</option>
-              <option value="human_resources">Human Resources (HR)</option>
-              <option value="computer_science">Computer Science / IT</option>
+              <option value="">${t('selectField')}</option>
+              <option value="human_resources">${t('humanResources')} (HR)</option>
+              <option value="computer_science">${t('computerScienceIt')}</option>
             </select>
           </div>
           <div style="margin-bottom:20px">
-            <label style="font-size:11px;font-weight:600;color:#888;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px">Password</label>
+            <label style="font-size:11px;font-weight:600;color:#888;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px">${t('password')}</label>
             <div style="position:relative">
-              <input type="password" id="reg-pass" placeholder="Minimum 8 characters" style="width:100%;padding-right:42px" required minlength="8" autocomplete="new-password"/>
+              <input type="password" id="reg-pass" placeholder="${t('minimum8Characters')}" style="width:100%;padding-right:42px" required minlength="8" autocomplete="new-password"/>
               <button type="button" onclick="togglePw('reg-pass','eye-rp')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:#666;cursor:pointer"><i id="eye-rp" class="fas fa-eye"></i></button>
             </div>
           </div>
           <button type="submit" class="btn-gold w-full" style="justify-content:center;font-size:14px;padding:13px" id="reg-btn">
-            <i class="fas fa-user-plus mr-2"></i>Create Account
+            <i class="fas fa-user-plus mr-2"></i>${t('createAccount')}
           </button>
         </form>
         <div style="text-align:center;margin-top:18px">
-          <span style="font-size:13px;color:#555">Already have an account? </span>
-          <button onclick="navigate('login')" style="background:none;border:none;color:#FFD700;font-size:13px;font-weight:600;cursor:pointer">Sign in</button>
+          <span style="font-size:13px;color:#555">${t('alreadyHaveAccount')} </span>
+          <button onclick="navigate('login')" style="background:none;border:none;color:#FFD700;font-size:13px;font-weight:600;cursor:pointer">${t('signIn')}</button>
         </div>
       </div>
     </div>
@@ -430,23 +2229,23 @@ async function doRegister(e) {
     specialization: document.getElementById('reg-spec').value,
     password: document.getElementById('reg-pass').value
   };
-  if (!body.specialization) { errEl.textContent = 'Please select a specialization'; errEl.style.display = 'block'; return; }
+  if (!body.specialization) { errEl.textContent = t('selectSpecialization'); errEl.style.display = 'block'; return; }
   btn.disabled = true;
-  btn.innerHTML = '<div class="loading-spinner" style="width:16px;height:16px;margin-right:8px"></div>Creating account...';
+  btn.innerHTML = `<div class="loading-spinner" style="width:16px;height:16px;margin-right:8px"></div>${t('creatingAccount')}`;
   errEl.style.display = 'none';
   try {
     const { data } = await API.post('/auth/register', body);
     if (data.success) {
       Auth.save(data.data.token, data.data.user);
-      notify('Account created! Welcome to HireTX.', 'success');
+      notify(t('accountCreatedWelcome'), 'success');
       navigate('dashboard');
     }
   } catch (err) {
-    const msg = err.response?.data?.message || 'Registration failed. Please try again.';
+    const msg = translateApiMessage(err.response?.data?.message || t('registerFailed'));
     errEl.textContent = msg;
     errEl.style.display = 'block';
     btn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-user-plus mr-2"></i>Create Account';
+    btn.innerHTML = `<i class="fas fa-user-plus mr-2"></i>${t('createAccount')}`;
   }
 }
 
@@ -460,14 +2259,14 @@ function togglePw(inputId, iconId) {
 // ─── CANDIDATE DASHBOARD ──────────────────────────────────────────────────────
 function renderDashboard() {
   if (Auth.can('admin')) { renderAdminDashboard(); return; }
-  renderWithLayout('Dashboard', `<div class="page-loading"><div class="loading-spinner"></div></div>`);
+  renderWithLayout(t('dashboard'), `<div class="page-loading"><div class="loading-spinner"></div></div>`);
   loadCandidateDashboard();
 }
 
 async function loadCandidateDashboard() {
   try {
     const { data } = await API.get('/dashboard/candidate');
-    if (!data.success) { notify('Failed to load dashboard', 'error'); return; }
+    if (!data.success) { notify(t('failedToLoadDashboard'), 'error'); return; }
     const d = data.data;
     State.candidateData = d;
     const tbclm = d.tbclm;
@@ -476,7 +2275,8 @@ async function loadCandidateDashboard() {
     const readiness = tbclm?.readiness_level || 'No Data';
     const readinessColor = getReadinessColor(readiness);
     const spec = d.profile?.specialization || 'none';
-    const specLabel = spec === 'human_resources' ? 'Human Resources' : spec === 'computer_science' ? 'Computer Science / IT' : 'Not Set';
+    const specLabel = specializationLabel(spec);
+    const readinessText = readinessLabel(readiness);
 
     const pc = document.getElementById('page-content');
     if (!pc) return;
@@ -2222,8 +4022,208 @@ function debounce(fn, delay) {
   return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), delay); };
 }
 
+function renderLandingShared() {
+  const isArabic = currentLocale() === 'ar';
+  const copy = isArabic ? {
+    dir: 'rtl',
+    font: "'Cairo', 'Inter', sans-serif",
+    tagline: 'منصة قياس الجاهزية المهنية',
+    nav: [['#hero', 'ابدأ'], ['#how', 'كيف يعمل'], ['#framework', 'النموذج'], ['#tracks', 'المسارات'], ['#compare', 'المقارنة']],
+    login: 'تسجيل الدخول',
+    startFree: 'ابدأ مجاناً',
+    badges: ['تقييم عملي واقعي', 'جاهزية لسوق العمل', 'تغذية راجعة مباشرة'],
+    heroTitle: ['أثبت جاهزيتك', 'الحقيقية', 'للعمل في سوق اليوم'],
+    heroText: 'HireTX منصة تقييم مهني متقدمة تقيس جاهزية المرشح من خلال محاكاة عمل واقعية، نتائج موزونة، وتحليل واضح يساعد على الانتقال من الاستعداد إلى الفرصة بثقة أكبر.',
+    heroPrimary: 'ابدأ تقييمك',
+    heroSecondary: 'استكشف المنصة',
+    stats: [['8,420', 'جلسة تقييم مكتملة'], ['127', 'محاكاة وظيفية'], ['91%', 'معدل اجتياز أولي']],
+    gaugeTag: 'جاهزية مرشحة',
+    gaugeLabel: 'مؤشر الجاهزية المهنية',
+    gaugeValue: 'جاهز للعمل',
+    readinessRows: [['84%', 'جاهز للعمل', '84%', '#1fe0a4', true], ['90%', 'T', '90%', '#f2b53d', false], ['82%', 'B', '82%', '#f2b53d', false], ['76%', 'C', '76%', '#f2b53d', false], ['71%', 'L', '71%', '#f2b53d', false], ['88%', 'M', '88%', '#f2b53d', false]],
+    how: { badge: 'خطوات بسيطة', titleA: 'كيف يعمل', titleB: 'HireTX', text: 'تجربة تقييم مصممة لتكون واضحة وسريعة ومهنية منذ التسجيل وحتى استلام التقرير النهائي.' },
+    steps: [['1', 'سجّل', 'أنشئ حسابك وحدد المسار المهني المناسب لك.'], ['2', 'اختر المسار', 'ابدأ بمحاكاة الموارد البشرية أو تقنية المعلومات.'], ['3', 'نفّذ المهام', 'أجب على سيناريوهات واقعية تقيس جاهزيتك الفعلية.'], ['4', 'راجع الملف', 'شاهد توزيع نقاطك عبر محاور TBCLM الخمسة.'], ['5', 'استلم التقرير', 'احصل على تقرير قابل للمشاركة مع توصيات تطوير مباشرة.']],
+    framework: { badge: 'نموذج التقييم', titleA: 'نموذج', titleB: 'TBCLM', titleC: 'للجاهزية المهنية', text: 'نموذج موزون يجمع بين المهارات الفنية والسلوكية والتحليلية والقيادية والجاهزية لسوق العمل ليمنحك صورة أقرب للحقيقة.' },
+    axes: [['T', 'المهارات التقنية', '30%', 'gear', '#68a4ff', 'المعرفة التخصصية وتطبيقاتها العملية'], ['B', 'السلوكيات الاحترافية', '25%', 'brain', '#f375d6', 'التواصل والالتزام والمرونة'], ['C', 'التحليل واتخاذ القرار', '20%', 'gavel', '#65d3ff', 'المنطق وحل المشكلات تحت الضغط'], ['L', 'القيادة والتأثير', '15%', 'bullseye', '#ffb53c', 'المبادرة والتنظيم وتحمل المسؤولية'], ['M', 'الجاهزية لسوق العمل', '10%', 'chart-column', '#5df2b1', 'الوعي المهني والقدرة على التكيف']],
+    scoreBands: [['0 - 49', 'يحتاج إلى تطوير', 'landing-status__box--bad'], ['50 - 74', 'في طور التحضير', 'landing-status__box--mid'], ['75 - 100', 'جاهز للعمل', 'landing-status__box--good']],
+    tracksHead: { badge: 'المسارات المهنية', titleA: 'اختر مسارك', titleB: 'المهني', text: 'ابدأ في المسار الأقرب لتخصصك واستلم تقييماً مبنياً على مواقف وظيفية واقعية داخل نفس المجال.' },
+    tracks: [['HR', '20 سيناريو · موارد بشرية', 'إدارة الموارد البشرية', 'محاكاة تغطي التوظيف، علاقات الموظفين، الامتثال، وإدارة الأداء داخل بيئة عمل حقيقية.', ['التوظيف', 'الأداء', 'المقابلات', 'السياسات'], 'ابدأ المسار', 'gold'], ['IT', '18 سيناريو · تقنية معلومات', 'تشغيل تكنولوجيا المعلومات', 'مهام عملية في الدعم الفني، إدارة الأنظمة، استكشاف الأعطال، والتواصل مع أصحاب المصلحة.', ['الدعم', 'الشبكات', 'الأنظمة', 'التحليل'], 'ابدأ المسار', 'blue']],
+    compareTitleA: 'HireTX',
+    compareTitleB: 'مقابل الطرق التقليدية',
+    compareHeaders: ['التقليدي', 'HireTX', 'الميزة'],
+    comparisons: ['محاكاة عمل واقعية', 'تقييم جاهزية متعدد الأبعاد', 'قياس موزون وفق TBCLM', 'تقرير تطوير شخصي', 'نتيجة واضحة قابلة للمشاركة'],
+    ctaEyebrow: 'جاهزية مهنية',
+    ctaTitle: 'جاهز لإثبات قدراتك؟',
+    ctaText: 'أنشئ حسابك الآن وابدأ أول تقييم عملي داخل HireTX لتحصل على نتيجة واضحة وتقرير يساعدك في خطواتك القادمة.',
+    ctaButton: 'ابدأ معنا الآن',
+    footer: [['HireTX', [{ type: 'text', value: 'منصة عربية لقياس الجاهزية المهنية عبر محاكاة واقعية وتقييم موزون يركز على الاستعداد الحقيقي للعمل.' }]], ['المنصة', [{ type: 'anchor', href: '#how', value: 'كيف تعمل' }, { type: 'anchor', href: '#framework', value: 'نموذج TBCLM' }, { type: 'anchor', href: '#tracks', value: 'المسارات' }]], ['الوصول', [{ type: 'action', page: 'login', value: 'تسجيل الدخول' }, { type: 'action', page: 'register', value: 'إنشاء حساب' }, { type: 'action', page: 'login', value: 'نسخة تجريبية' }]], ['المصادر', [{ type: 'text', value: 'تقارير جاهزية' }, { type: 'text', value: 'نتائج قابلة للمشاركة' }, { type: 'text', value: 'تحليلات مهنية' }]]],
+    copyright: '© 2026 HireTX. جميع الحقوق محفوظة.'
+  } : {
+    dir: 'ltr',
+    font: "'Inter', 'Cairo', sans-serif",
+    tagline: 'Career Readiness Intelligence Platform',
+    nav: [['#hero', 'Start'], ['#how', 'How It Works'], ['#framework', 'Framework'], ['#tracks', 'Tracks'], ['#compare', 'Why HireTX']],
+    login: 'Sign In',
+    startFree: 'Start Free',
+    badges: ['Applied Assessment Design', 'Workforce Readiness', 'Instant Feedback'],
+    heroTitle: ['Prove Your', 'Real Readiness', "For Today's Jobs"],
+    heroText: 'HireTX is a premium readiness platform that evaluates candidates through realistic job simulation, weighted scoring, and sharp development insight so the result feels credible, modern, and employer-relevant.',
+    heroPrimary: 'Start Your Assessment',
+    heroSecondary: 'Explore the Platform',
+    stats: [['8,420', 'completed assessment sessions'], ['127', 'job simulation scenarios'], ['91%', 'initial pass rate']],
+    gaugeTag: 'Candidate Readiness',
+    gaugeLabel: 'Professional Readiness Index',
+    gaugeValue: 'Ready for Work',
+    readinessRows: [['84%', 'Ready for Work', '84%', '#1fe0a4', true], ['90%', 'T', '90%', '#f2b53d', false], ['82%', 'B', '82%', '#f2b53d', false], ['76%', 'C', '76%', '#f2b53d', false], ['71%', 'L', '71%', '#f2b53d', false], ['88%', 'M', '88%', '#f2b53d', false]],
+    how: { badge: 'Simple Journey', titleA: 'How', titleB: 'HireTX', text: 'A professional assessment flow designed to feel clear, rigorous, and efficient from sign-up to final reporting.' },
+    steps: [['1', 'Create Your Account', 'Register and choose the professional path that matches your field.'], ['2', 'Select a Track', 'Launch the HR or IT simulation designed for your role family.'], ['3', 'Complete Real Tasks', 'Respond to workplace scenarios that measure practical readiness.'], ['4', 'Review Your Profile', 'See your performance across all five TBCLM dimensions.'], ['5', 'Share Your Report', 'Download a polished report with actionable development guidance.']],
+    framework: { badge: 'Assessment Framework', titleA: 'The', titleB: 'TBCLM', titleC: 'Readiness Model', text: 'A weighted model that blends technical, behavioral, analytical, leadership, and market-readiness signals into a clearer view of employability.' },
+    axes: [['T', 'Technical Capability', '30%', 'gear', '#68a4ff', 'Applied domain knowledge and practical execution'], ['B', 'Professional Behavior', '25%', 'brain', '#f375d6', 'Communication, ownership, and adaptability'], ['C', 'Analysis & Judgment', '20%', 'gavel', '#65d3ff', 'Reasoning and decision-making under pressure'], ['L', 'Leadership & Influence', '15%', 'bullseye', '#ffb53c', 'Initiative, structure, and accountability'], ['M', 'Market Readiness', '10%', 'chart-column', '#5df2b1', 'Career awareness and workplace adaptability']],
+    scoreBands: [['0 - 49', 'Needs Development', 'landing-status__box--bad'], ['50 - 74', 'Building Readiness', 'landing-status__box--mid'], ['75 - 100', 'Ready for Work', 'landing-status__box--good']],
+    tracksHead: { badge: 'Professional Tracks', titleA: 'Choose Your', titleB: 'Career Track', text: 'Begin in the path closest to your specialization and get evaluated through realistic role-based scenarios.' },
+    tracks: [['HR', '20 scenarios - Human Resources', 'Human Resources Operations', 'A realistic simulation covering hiring, employee relations, compliance, and performance management inside a modern workplace.', ['Hiring', 'Performance', 'Interviews', 'Policy'], 'Start This Track', 'gold'], ['IT', '18 scenarios - Information Technology', 'IT Operations & Support', 'Hands-on tasks across support, systems operations, troubleshooting, and stakeholder communication.', ['Support', 'Networks', 'Systems', 'Analysis'], 'Start This Track', 'blue']],
+    compareTitleA: 'Why',
+    compareTitleB: 'HireTX Outperforms Traditional Screening',
+    compareHeaders: ['Traditional', 'HireTX', 'Capability'],
+    comparisons: ['Realistic work simulation', 'Multi-dimensional readiness evaluation', 'Weighted TBCLM scoring', 'Personal development reporting', 'Shareable, decision-ready outcome'],
+    ctaEyebrow: 'Professional Readiness',
+    ctaTitle: 'Ready To Prove What You Can Do?',
+    ctaText: 'Create your account and begin your first hands-on HireTX assessment to unlock a clearer score, sharper insight, and a more credible readiness story.',
+    ctaButton: 'Start With HireTX',
+    footer: [['HireTX', [{ type: 'text', value: 'A modern readiness platform that blends realistic job simulation with weighted assessment to surface real employability signals.' }]], ['Platform', [{ type: 'anchor', href: '#how', value: 'How It Works' }, { type: 'anchor', href: '#framework', value: 'TBCLM Framework' }, { type: 'anchor', href: '#tracks', value: 'Career Tracks' }]], ['Access', [{ type: 'action', page: 'login', value: 'Sign In' }, { type: 'action', page: 'register', value: 'Create Account' }, { type: 'action', page: 'login', value: 'Demo Access' }]], ['Outputs', [{ type: 'text', value: 'Readiness Reports' }, { type: 'text', value: 'Shareable Results' }, { type: 'text', value: 'Professional Insights' }]]],
+    copyright: '© 2026 HireTX. All rights reserved.'
+  };
+
+  const arrowIcon = isArabic ? 'arrow-left' : 'arrow-right';
+  const statsHTML = copy.stats.map(([value, label]) => `<div class="landing-stat"><strong>${value}</strong><span>${label}</span></div>`).join('');
+  const stepsHTML = copy.steps.map(([number, title, text]) => `<div class="landing-step"><div class="landing-step__bubble">${number}</div><h3>${title}</h3><p>${text}</p></div>`).join('');
+  const axesCardsHTML = copy.axes.map(([key, title, weight, icon, color, note]) => `<div class="landing-axis-card"><div class="landing-axis-card__icon" style="background:${color}16;border-color:${color}33"><i class="fas fa-${icon}" style="color:${color}"></i></div><div class="landing-axis-card__meta"><span>${key}</span><strong>${title}</strong><small>${note}</small></div><div class="landing-axis-card__weight" style="color:${color}">${weight}</div></div>`).join('');
+  const axesRowsHTML = copy.axes.map(([key, title, weight, , color]) => `<div class="landing-axis-row"><span>${weight}</span><strong>${title}</strong><em style="color:${color}">${key}</em></div>`).join('');
+  const readinessHTML = copy.readinessRows.map(([score, label, width, tone, headline]) => `<div class="landing-card__row ${headline ? 'landing-card__row--headline' : ''}"><span>${score}</span><div class="landing-card__bar"><div style="width:${width};background:${tone}"></div></div><strong>${label}</strong></div>`).join('');
+  const tracksHTML = copy.tracks.map(([badge, meta, title, text, chips, cta, tone]) => `<article class="landing-track ${tone === 'blue' ? 'landing-track--blue' : ''}"><div class="landing-track__top"><span>${meta}</span><div class="landing-track__badge">${badge}</div></div><h3>${title}</h3><p>${text}</p><div class="landing-track__chips">${chips.map((chip) => `<span>${chip}</span>`).join('')}</div><button onclick="navigate('register')">${cta} <i class="fas fa-${arrowIcon}"></i></button></article>`).join('');
+  const comparisonHTML = copy.comparisons.map((label) => `<div class="landing-compare__row"><span><i class="fas fa-xmark"></i></span><strong><i class="fas fa-circle-check"></i></strong><p>${label}</p></div>`).join('');
+  const footerHTML = copy.footer.map(([title, items]) => `<div><h4>${title}</h4>${items.map((item) => item.type === 'anchor' ? `<a href="${item.href}">${item.value}</a>` : item.type === 'action' ? `<a href="javascript:void(0)" onclick="navigate('${item.page}')">${item.value}</a>` : `<p>${item.value}</p>`).join('')}</div>`).join('');
+
+  document.getElementById('app').innerHTML = `
+  <style>
+    .landing-shell { min-height: 100vh; background: radial-gradient(circle at top center, rgba(255, 188, 33, 0.18), transparent 34%), radial-gradient(circle at 12% 10%, rgba(255, 188, 33, 0.08), transparent 24%), linear-gradient(180deg, #090909 0%, #050505 100%); color: #f5efe1; direction: ${copy.dir}; font-family: ${copy.font}; }
+    .landing-shell * { box-sizing: border-box; }
+    .landing-container { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    .landing-nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(18px); background: rgba(7, 7, 7, 0.88); border-bottom: 1px solid rgba(255, 191, 54, 0.08); }
+    .landing-nav__inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 18px 0; }
+    .landing-brand { display: flex; align-items: center; gap: 12px; }
+    .landing-brand__mark { width: 42px; height: 42px; border-radius: 14px; background: linear-gradient(135deg, #ffcc45 0%, #d79a14 100%); color: #151007; display: grid; place-items: center; font-weight: 900; letter-spacing: -0.5px; }
+    .landing-brand strong { display: block; color: #fff1cd; font-size: 18px; line-height: 1; }
+    .landing-brand span { display: block; color: #8f7e59; font-size: 10px; margin-top: 4px; }
+    .landing-links, .landing-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .landing-links a { color: #b9aa8a; font-size: 14px; text-decoration: none; transition: color 0.2s ease; }
+    .landing-links a:hover { color: #fff3cd; }
+    .landing-btn { border-radius: 14px; border: 1px solid rgba(255, 195, 64, 0.25); padding: 12px 22px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.24s ease; background-clip: padding-box; }
+    .landing-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(217, 153, 17, 0.25); }
+    .landing-btn--primary { background: linear-gradient(135deg, #ffcf5a 0%, #d99911 100%); color: #1d1406; box-shadow: 0 14px 35px rgba(217, 153, 17, 0.25); }
+    .landing-btn--primary:hover { background: linear-gradient(135deg, #ffd734 0%, #e4b032 100%); }
+    .landing-btn--ghost { background: rgba(255, 255, 255, 0.04); color: #fbe78f; }
+    .landing-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 390px); gap: 54px; align-items: center; padding: 56px 0 72px; background: radial-gradient(circle at top left, rgba(255, 203, 76, 0.08), transparent 22%), radial-gradient(circle at 90% 20%, rgba(255, 214, 75, 0.1), transparent 16%); border: 1px solid rgba(255, 203, 76, 0.12); box-shadow: inset 0 0 80px rgba(255, 203, 76, 0.05); }
+    .landing-badges { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .landing-pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid rgba(255, 194, 62, 0.22); background: rgba(255, 203, 76, 0.1); border-radius: 999px; color: #f7d98b; font-size: 12px; box-shadow: 0 0 16px rgba(255, 203, 76, 0.12); } 
+    .landing-hero h1 { font-size: clamp(2.5rem, 5vw, 4.7rem); line-height: 1.08; margin: 0 0 18px; color: #f8f3e8; font-weight: 900; letter-spacing: -1.8px; }
+    .landing-hero h1 span { color: #ffd54f; text-shadow: 0 0 18px rgba(255, 213, 79, 0.3); }
+    .landing-hero p { max-width: 620px; color: #93856a; font-size: 16px; line-height: 1.9; margin: 0 0 28px; }
+    .landing-hero__cta { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 30px; }
+    .landing-hero__meta { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; max-width: 520px; }
+    .landing-stat strong { display: block; color: #f3ba3b; font-size: 28px; line-height: 1; margin-bottom: 6px; }
+    .landing-stat span { display: block; color: #796c57; font-size: 12px; }
+    .landing-card { border: 1px solid rgba(255, 190, 52, 0.35); border-radius: 28px; background: radial-gradient(circle at top center, rgba(255, 203, 76, 0.12), transparent 30%), linear-gradient(180deg, rgba(14, 15, 18, 0.96), rgba(10, 10, 12, 0.96)); padding: 26px; box-shadow: 0 25px 60px rgba(255, 195, 35, 0.18), inset 0 0 0 1px rgba(255, 191, 64, 0.08); }
+    .landing-card__tag { display: inline-flex; padding: 7px 12px; border-radius: 999px; background: linear-gradient(135deg, #ffd700, #d99911); color: #1d1406; font-size: 11px; margin-bottom: 18px; box-shadow: 0 10px 18px rgba(255, 203, 76, 0.2); }
+    .landing-card__eyebrow { color: #f7d98b; font-size: 12px; margin-bottom: 10px; }
+    .landing-card__gauge { width: 100%; max-width: 260px; margin: 0 auto 6px; display: block; }
+    .landing-card__score { text-align: center; margin-top: -52px; margin-bottom: 18px; position: relative; z-index: 1; }
+    .landing-card__score strong { display: block; font-size: 44px; line-height: 1; color: #ffd64f; text-shadow: 0 0 16px rgba(255, 210, 90, 0.35); }
+    .landing-card__score span { color: #ffe0a0; font-size: 13px; }
+    .landing-card__row { display: grid; grid-template-columns: 52px minmax(0, 1fr) 94px; gap: 10px; align-items: center; margin-top: 12px; color: #d8bb75; font-size: 12px; }
+    .landing-card__row strong { color: #f4b63e; }
+    .landing-card__row--headline strong { color: #46e1a9; }
+    .landing-card__bar { height: 6px; background: rgba(255, 255, 255, 0.08); border-radius: 999px; overflow: hidden; }
+    .landing-card__bar div { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #ffd700, #d99911); }
+    .landing-section { padding: 34px 0 76px; border-top: 1px solid rgba(255, 194, 62, 0.06); }
+    .landing-section__head { text-align: center; max-width: 760px; margin: 0 auto 34px; }
+    .landing-section__head span { display: inline-flex; margin-bottom: 14px; padding: 7px 12px; background: rgba(255, 191, 64, 0.08); border: 1px solid rgba(255, 191, 64, 0.12); color: #c7a55d; border-radius: 999px; font-size: 11px; }
+    .landing-section__head h2 { margin: 0 0 10px; color: #f5f1e7; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.2; font-weight: 900; }
+    .landing-section__head h2 span { color: #efb63b; }
+    .landing-section__head p { margin: 0; color: #867861; line-height: 1.9; font-size: 15px; }
+    .landing-steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px; position: relative; }
+    .landing-steps::before { content: ''; position: absolute; top: 29px; inset-inline: 8%; height: 1px; background: linear-gradient(90deg, transparent, rgba(231, 176, 52, 0.4), transparent); }
+    .landing-step { position: relative; text-align: center; padding: 0 10px; }
+    .landing-step__bubble { width: 58px; height: 58px; margin: 0 auto 16px; border-radius: 50%; border: 1px solid rgba(255, 191, 64, 0.34); background: linear-gradient(180deg, rgba(38, 30, 10, 0.9), rgba(12, 12, 12, 0.95)); color: #f4b53c; display: grid; place-items: center; font-size: 22px; font-weight: 800; }
+    .landing-step h3 { margin: 0 0 8px; color: #f4efe6; font-size: 17px; font-weight: 800; }
+    .landing-step p { margin: 0; color: #7e715d; font-size: 13px; line-height: 1.8; }
+    .landing-model { border-radius: 28px; background: linear-gradient(180deg, rgba(18, 18, 22, 0.94), rgba(9, 9, 11, 0.96)); border: 1px solid rgba(255, 191, 64, 0.08); padding: 30px; }
+    .landing-axis-cards { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; margin-bottom: 22px; }
+    .landing-axis-card { border-radius: 20px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); padding: 18px 16px; min-height: 148px; display: flex; flex-direction: column; justify-content: space-between; gap: 14px; }
+    .landing-axis-card__icon { width: 44px; height: 44px; border-radius: 14px; border: 1px solid; display: grid; place-items: center; }
+    .landing-axis-card__meta span { display: block; font-size: 12px; margin-bottom: 4px; color: #a19376; }
+    .landing-axis-card__meta strong { display: block; color: #f8f4eb; font-size: 15px; margin-bottom: 6px; }
+    .landing-axis-card__meta small { color: #776b58; line-height: 1.7; display: block; font-size: 12px; }
+    .landing-axis-card__weight { font-size: 26px; font-weight: 900; line-height: 1; }
+    .landing-axis-table { margin-top: 18px; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+    .landing-axis-row { display: grid; grid-template-columns: 70px minmax(0, 1fr) 28px; align-items: center; gap: 14px; padding: 16px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+    .landing-axis-row span { color: #f1b53c; font-weight: 800; font-size: 14px; }
+    .landing-axis-row strong { color: #ece3d2; font-size: 14px; }
+    .landing-axis-row em { font-style: normal; font-weight: 900; }
+    .landing-status { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 22px; }
+    .landing-status__box { border-radius: 18px; padding: 15px 16px; border: 1px solid rgba(255, 255, 255, 0.06); font-size: 13px; color: #dccfb5; }
+    .landing-status__box strong { display: block; font-size: 18px; margin-bottom: 6px; }
+    .landing-status__box--bad { background: rgba(227, 83, 83, 0.08); }
+    .landing-status__box--mid { background: rgba(240, 179, 51, 0.08); }
+    .landing-status__box--good { background: rgba(44, 223, 157, 0.08); }
+    .landing-tracks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-bottom: 28px; }
+    .landing-track { border-radius: 26px; padding: 24px; background: linear-gradient(180deg, rgba(17, 17, 19, 0.96), rgba(10, 10, 12, 0.98)); border: 1px solid rgba(255, 191, 64, 0.08); box-shadow: 0 18px 40px rgba(0,0,0,0.24); }
+    .landing-track--blue { border-color: rgba(104, 164, 255, 0.12); }
+    .landing-track__top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; color: #a9997e; font-size: 12px; }
+    .landing-track__badge { width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center; background: rgba(255, 191, 64, 0.12); color: #ffcb4c; font-weight: 900; }
+    .landing-track h3 { margin: 0 0 10px; color: #f7f3ea; font-size: 24px; }
+    .landing-track p { margin: 0 0 16px; color: #8b7d67; line-height: 1.9; font-size: 14px; }
+    .landing-track__chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+    .landing-track__chips span { border-radius: 999px; padding: 7px 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); color: #cdbd9d; font-size: 12px; }
+    .landing-track button { width: 100%; border: none; border-radius: 14px; padding: 13px 16px; background: linear-gradient(135deg, #ffcb4c 0%, #d99911 100%); color: #1d1406; font-weight: 800; font-size: 14px; cursor: pointer; }
+    .landing-compare { border-radius: 28px; background: linear-gradient(180deg, rgba(18, 18, 22, 0.94), rgba(8, 8, 10, 0.98)); border: 1px solid rgba(255, 191, 64, 0.08); overflow: hidden; }
+    .landing-compare__head, .landing-compare__row { display: grid; grid-template-columns: 120px 120px minmax(0, 1fr); align-items: center; gap: 16px; padding: 16px 22px; }
+    .landing-compare__head { background: rgba(255, 191, 64, 0.04); color: #cdae67; font-size: 13px; font-weight: 700; }
+    .landing-compare__row { border-top: 1px solid rgba(255, 255, 255, 0.05); }
+    .landing-compare__row span, .landing-compare__row strong { text-align: center; font-size: 18px; }
+    .landing-compare__row span { color: #f36c7a; }
+    .landing-compare__row strong { color: #60e8b2; }
+    .landing-compare__row p { margin: 0; color: #ebe5d6; font-size: 14px; }
+    .landing-cta { text-align: center; padding: 86px 24px; background: radial-gradient(circle at center, rgba(255, 191, 64, 0.16), transparent 26%), linear-gradient(180deg, rgba(12, 12, 12, 0.98), rgba(6, 6, 6, 0.98)); }
+    .landing-cta small { display: block; color: #c7b184; font-size: 18px; margin-bottom: 12px; }
+    .landing-cta h2 { margin: 0 0 14px; font-size: clamp(2.2rem, 5vw, 3.7rem); color: #f8f2e7; font-weight: 900; }
+    .landing-cta p { max-width: 620px; margin: 0 auto 24px; color: #8e8066; line-height: 1.9; font-size: 15px; }
+    .landing-footer { padding: 34px 0 24px; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+    .landing-footer__grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap: 24px; margin-bottom: 22px; }
+    .landing-footer h4 { margin: 0 0 12px; color: #f0e4c4; font-size: 15px; }
+    .landing-footer p, .landing-footer a { display: block; margin: 0 0 9px; color: #786b57; text-decoration: none; font-size: 13px; }
+    .landing-footer__bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; color: #625748; font-size: 12px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.04); }
+    @media (max-width: 1080px) { .landing-links { display: none; } .landing-hero, .landing-footer__grid, .landing-tracks { grid-template-columns: 1fr; } .landing-axis-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } .landing-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    @media (max-width: 780px) { .landing-container { width: min(100% - 20px, 100%); } .landing-nav__inner, .landing-actions, .landing-hero__cta { gap: 10px; } .landing-actions { justify-content: flex-start; } .landing-hero { padding-top: 28px; gap: 28px; } .landing-hero__meta, .landing-status, .landing-compare__head, .landing-compare__row { grid-template-columns: 1fr; } .landing-steps, .landing-axis-cards { grid-template-columns: 1fr; } .landing-steps::before { display: none; } .landing-card, .landing-model, .landing-track { padding: 20px; } .landing-footer__bottom { justify-content: center; text-align: center; } }
+  </style>
+  <div class="landing-shell">
+    <nav class="landing-nav"><div class="landing-container landing-nav__inner"><div class="landing-brand"><div class="landing-brand__mark">HX</div><div><strong>HireTX</strong><span>${copy.tagline}</span></div></div><div class="landing-links">${copy.nav.map(([href, label]) => `<a href="${href}">${label}</a>`).join('')}</div><div class="landing-actions"><button class="landing-btn landing-btn--ghost" onclick="navigate('login')">${copy.login}</button><button class="landing-btn landing-btn--primary" onclick="navigate('register')">${copy.startFree}</button></div></div></nav>
+    <section class="landing-container landing-hero" id="hero"><div class="landing-hero__copy"><div class="landing-badges">${copy.badges.map((badge) => `<span class="landing-pill">${badge}</span>`).join('')}</div><h1>${copy.heroTitle[0]} <span>${copy.heroTitle[1]}</span><br/>${copy.heroTitle[2]}</h1><p>${copy.heroText}</p><div class="landing-hero__cta"><button class="landing-btn landing-btn--primary" onclick="navigate('register')">${copy.heroPrimary} <i class="fas fa-${arrowIcon}"></i></button><button class="landing-btn landing-btn--ghost" onclick="navigate('login')">${copy.heroSecondary}</button></div><div class="landing-hero__meta">${statsHTML}</div></div><aside class="landing-card"><div class="landing-card__tag">${copy.gaugeTag}</div><div class="landing-card__eyebrow">${copy.gaugeLabel}</div><svg class="landing-card__gauge" viewBox="0 0 260 160" fill="none" aria-hidden="true"><path d="M40 126C48 75 86 38 130 38C174 38 212 75 220 126" stroke="rgba(255,255,255,0.12)" stroke-width="18" stroke-linecap="round"/><path d="M40 126C48 75 86 38 130 38C174 38 212 75 220 126" stroke="#20df9d" stroke-width="18" stroke-linecap="round" pathLength="100" stroke-dasharray="84 100"/></svg><div class="landing-card__score"><strong>84</strong><span>${copy.gaugeValue}</span></div>${readinessHTML}</aside></section>
+    <section class="landing-section" id="how"><div class="landing-container"><div class="landing-section__head"><span>${copy.how.badge}</span><h2>${copy.how.titleA} <span>${copy.how.titleB}</span></h2><p>${copy.how.text}</p></div><div class="landing-steps">${stepsHTML}</div></div></section>
+    <section class="landing-section" id="framework"><div class="landing-container"><div class="landing-section__head"><span>${copy.framework.badge}</span><h2>${copy.framework.titleA} <span>${copy.framework.titleB}</span> ${copy.framework.titleC}</h2><p>${copy.framework.text}</p></div><div class="landing-model"><div class="landing-axis-cards">${axesCardsHTML}</div><div class="landing-axis-table">${axesRowsHTML}</div><div class="landing-status">${copy.scoreBands.map(([range, label, cls]) => `<div class="landing-status__box ${cls}"><strong>${range}</strong> ${label}</div>`).join('')}</div></div></div></section>
+    <section class="landing-section" id="tracks"><div class="landing-container"><div class="landing-section__head"><span>${copy.tracksHead.badge}</span><h2>${copy.tracksHead.titleA} <span>${copy.tracksHead.titleB}</span></h2><p>${copy.tracksHead.text}</p></div><div class="landing-tracks">${tracksHTML}</div><div class="landing-section__head" id="compare" style="margin-top:14px"><h2>${copy.compareTitleA} <span>${copy.compareTitleB}</span></h2></div><div class="landing-compare"><div class="landing-compare__head"><span>${copy.compareHeaders[0]}</span><strong>${copy.compareHeaders[1]}</strong><p>${copy.compareHeaders[2]}</p></div>${comparisonHTML}</div></div></section>
+    <section class="landing-cta"><div class="landing-container"><small>${copy.ctaEyebrow}</small><h2>${copy.ctaTitle}</h2><p>${copy.ctaText}</p><button class="landing-btn landing-btn--primary" onclick="navigate('register')">${copy.ctaButton}</button></div></section>
+    <footer class="landing-footer"><div class="landing-container"><div class="landing-footer__grid">${footerHTML}</div><div class="landing-footer__bottom"><span>${copy.copyright}</span><span>x2TBCLM v1</span></div></div></footer>
+  </div>`;
+}
+
+renderLanding = renderLandingShared;
+renderLandingLegacy = renderLandingShared;
+
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 (function init() {
+  loadLocale();
+  startLocalizationObserver();
   Auth.load();
   if (Auth.isLoggedIn()) {
     const role = Auth.role();

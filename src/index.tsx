@@ -20,7 +20,7 @@ app.use('/api/*', cors({
 // Health check
 app.get('/api/health', (c) => c.json({ 
   status: 'healthy', 
-  system: 'HireTX – National Employability Readiness System',
+  system: 'HireTX - National Employability Readiness System',
   version: '2.0.0',
   timestamp: new Date().toISOString()
 }))
@@ -43,11 +43,11 @@ app.get('*', (c) => c.html(getHTML()))
 
 function getHTML(): string {
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HireTX – National Employability Readiness System</title>
+  <title>HireTX - National Employability Readiness System</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -66,7 +66,7 @@ function getHTML(): string {
     }
   </script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
     * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
     body { background: #0A0A0A; color: #FFFFFF; margin: 0; padding: 0; }
     .gold-gradient { background: linear-gradient(135deg, #FFD700 0%, #E6C200 50%, #B8960C 100%); }
@@ -161,6 +161,24 @@ function getHTML(): string {
     .tab-btn.active { background: rgba(255,215,0,0.12); color: #FFD700; }
     .tab-btn:not(.active) { background: transparent; color: #666; }
     .tab-btn:hover:not(.active) { color: #aaa; }
+    .locale-switcher { position: fixed; top: 16px; right: 16px; left: auto; z-index: 10001; display: inline-flex; align-items: center; justify-content: center; direction: ltr; gap: 4px; padding: 4px; border-radius: 999px; background: rgba(13,13,13,0.94); border: 1px solid #2A2A2A; box-shadow: 0 12px 30px rgba(0,0,0,0.28); backdrop-filter: blur(10px); }
+    .locale-switcher button { border: none; border-radius: 999px; padding: 7px 12px; min-width: 40px; text-align: center; font-size: 11px; font-weight: 700; cursor: pointer; background: transparent; color: #888; transition: all 0.2s ease; }
+    .locale-switcher button.active { background: linear-gradient(135deg, #FFD700, #E6C200); color: #000; }
+    .locale-switcher button:not(.active):hover { color: #fff; background: rgba(255,255,255,0.05); }
+    html[dir="rtl"] body { font-family: 'Cairo', sans-serif; }
+    html[dir="rtl"] .main-layout,
+    html[dir="rtl"] .main-content,
+    html[dir="rtl"] .content-area,
+    html[dir="rtl"] .topbar,
+    html[dir="rtl"] .modal-box,
+    html[dir="rtl"] .card-dark { direction: rtl; }
+    html[dir="rtl"] .sidebar { border-left: 1px solid #1E1E1E; border-right: none; }
+    html[dir="rtl"] .sidebar-item.active { border-right: 2px solid #FFD700; border-left: none; }
+    html[dir="rtl"] .notification { left: 20px; right: auto; }
+    html[dir="rtl"] .locale-switcher { left: 16px; right: auto; }
+    html[dir="rtl"] input,
+    html[dir="rtl"] textarea,
+    html[dir="rtl"] select { text-align: right; }
   </style>
 </head>
 <body>
